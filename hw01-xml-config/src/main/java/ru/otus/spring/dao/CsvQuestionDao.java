@@ -30,8 +30,8 @@ public class CsvQuestionDao implements QuestionDao {
             for (QuestionDto dto : csvToBean) {
                 questions.add(dto.toDomainObject());
             }
-        } catch (IOException | NullPointerException e) {
-            throw new QuestionReadException("File reading exception" + fileNameProvider.getTestFileName(), e);
+        } catch (IOException e) {
+            throw new QuestionReadException("File reading exception " + fileNameProvider.getTestFileName(), e);
         }
 
         return questions;
