@@ -1,9 +1,11 @@
 package ru.otus.spring.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.otus.spring.config.TestConfig;
 import ru.otus.spring.domain.TestResult;
 
+@Service
 @RequiredArgsConstructor
 public class ResultServiceImpl implements ResultService {
     private final TestConfig testConfig;

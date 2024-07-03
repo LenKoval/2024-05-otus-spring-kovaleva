@@ -2,12 +2,14 @@ package ru.otus.spring.dao.dto;
 
 import com.opencsv.bean.CsvBindAndSplitByPosition;
 import com.opencsv.bean.CsvBindByPosition;
+import lombok.Data;
 import ru.otus.spring.domain.Answer;
 import ru.otus.spring.domain.Question;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 public class QuestionDto {
     @CsvBindByPosition(position = 0)
     private String text;
