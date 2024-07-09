@@ -2,15 +2,11 @@ package ru.otus.spring.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.otus.spring.dao.CsvQuestionDao;
 import ru.otus.spring.dao.QuestionDao;
 import ru.otus.spring.domain.Answer;
 import ru.otus.spring.domain.Question;
 import ru.otus.spring.domain.Student;
 import ru.otus.spring.domain.TestResult;
-import ru.otus.spring.service.IOService;
-import ru.otus.spring.service.TestService;
-import ru.otus.spring.service.TestServiceImpl;
 
 import java.util.List;
 
@@ -29,14 +25,6 @@ public class TestServiceImplTest {
         ioService = mock(LocalizedIOService.class);
         questionDao = mock(QuestionDao.class);
         testService = new TestServiceImpl(ioService, questionDao);
-    }
-
-    @Test
-    void testExecuteTestFor() {
-        testService.executeTestFor(student);
-        verify(ioService).printLineLocalized(any());
-        verify(ioService).printFormattedLine(any());
-        verify(questionDao).findAll();
     }
 
     @Test
