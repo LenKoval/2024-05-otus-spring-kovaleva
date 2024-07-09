@@ -3,6 +3,7 @@ package ru.otus.spring.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.otus.spring.dao.CsvQuestionDao;
+import ru.otus.spring.dao.QuestionDao;
 import ru.otus.spring.domain.Answer;
 import ru.otus.spring.domain.Question;
 import ru.otus.spring.domain.Student;
@@ -19,21 +20,21 @@ import static org.mockito.Mockito.*;
 
 public class TestServiceImplTest {
     private TestService testService;
-    private static IOService ioService;
-    private static CsvQuestionDao questionDao;
+    private static LocalizedIOService ioService;
+    private static QuestionDao questionDao;
     private final Student student = new Student("lena", "koval");
 
     @BeforeEach
     void mockUp() {
-        ioService = mock(IOService.class);
-        questionDao = mock(CsvQuestionDao.class);
+        ioService = mock(LocalizedIOService.class);
+        questionDao = mock(QuestionDao.class);
         testService = new TestServiceImpl(ioService, questionDao);
     }
 
     @Test
     void testExecuteTestFor() {
         testService.executeTestFor(student);
-        verify(ioService).printLine(any());
+        verify(ioService).printLineLocalized(any());
         verify(ioService).printFormattedLine(any());
         verify(questionDao).findAll();
     }
@@ -44,7 +45,7 @@ public class TestServiceImplTest {
         TestResult expectedTestResult = createTestResult(student, questions);
 
         given(questionDao.findAll()).willReturn(questions);
-        given(ioService.readIntForRange(anyInt(), anyInt(), any())).willReturn(1);
+        given(ioService.readIntForRangeLocalized(anyInt(), anyInt(), any())).willReturn(1);
 
         TestService sut = new TestServiceImpl(ioService, questionDao);
         TestResult actualTestResult = sut.executeTestFor(student);

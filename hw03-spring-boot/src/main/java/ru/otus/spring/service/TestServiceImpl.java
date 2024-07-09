@@ -50,7 +50,7 @@ public class TestServiceImpl implements TestService {
     }
 
     private Answer getStudentAnswer(List<Answer> answers) {
-        int answerIdx = ioService.readIntForRange(1, answers.size(), "Wrong answer number. Try again...\n");
+        int answerIdx = ioService.readIntForRangeLocalized(1, answers.size(), "TestService.wrong.answer.number");
         return answers.get(answerIdx - 1);
     }
 }
