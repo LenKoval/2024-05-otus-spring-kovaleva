@@ -31,7 +31,7 @@ public class QuestionRepositoryImplTest {
     @Test
     void testQuestionReadException() {
         when(fileNameProvider.getTestFileName()).thenReturn(notExist);
-        assertThrows(NullPointerException.class, questionRepository::getQuestions);
+        assertThrows(QuestionReadException.class, questionRepository::getQuestions);
     }
 
     @Test
