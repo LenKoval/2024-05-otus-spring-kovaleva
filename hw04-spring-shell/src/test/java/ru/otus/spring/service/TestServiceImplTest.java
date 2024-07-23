@@ -1,7 +1,9 @@
 package ru.otus.spring.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.spring.dao.QuestionDao;
 import ru.otus.spring.domain.Answer;
 import ru.otus.spring.domain.Question;
@@ -14,18 +16,18 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest(classes = TestServiceImpl.class)
 public class TestServiceImplTest {
-    private TestService testService;
+
+    @Autowired
+    private TestServiceImpl testService;
+
+    @MockBean
     private static LocalizedIOService ioService;
+
+    @MockBean
     private static QuestionDao questionDao;
     private final Student student = new Student("lena", "koval");
-
-    @BeforeEach
-    void mockUp() {
-        ioService = mock(LocalizedIOService.class);
-        questionDao = mock(QuestionDao.class);
-        testService = new TestServiceImpl(ioService, questionDao);
-    }
 
     @Test
     void shouldReturnSuccessfulTestResultForOneQuestion() {

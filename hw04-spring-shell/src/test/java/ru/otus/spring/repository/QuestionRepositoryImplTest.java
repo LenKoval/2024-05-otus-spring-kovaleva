@@ -2,6 +2,9 @@ package ru.otus.spring.repository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.spring.config.TestFileNameProvider;
 import ru.otus.spring.exceptions.QuestionReadException;
 
@@ -10,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest(classes = QuestionRepositoryImpl.class)
 public class QuestionRepositoryImplTest {
 
     private static final String notExist = "not_exist.csv";
@@ -18,13 +22,14 @@ public class QuestionRepositoryImplTest {
 
     private static final String trueTests = "questions-true.csv";
 
+    @Autowired
     private static QuestionRepository questionRepository;
 
+    @MockBean
     private static TestFileNameProvider fileNameProvider;
 
     @BeforeEach
-    void mockUp() {
-        fileNameProvider = mock(TestFileNameProvider.class);
+    void getUp() {
         questionRepository = new QuestionRepositoryImpl(fileNameProvider);
     }
 

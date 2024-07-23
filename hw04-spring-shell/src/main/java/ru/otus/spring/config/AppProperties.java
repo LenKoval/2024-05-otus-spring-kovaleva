@@ -15,10 +15,9 @@ import java.util.Map;
 @Setter
 @ConfigurationProperties(prefix = "test")
 public class AppProperties implements TestConfig, TestFileNameProvider, LocaleConfig {
-    @Getter
+
     private int rightAnswersCountToPass;
 
-    @Getter
     private Locale locale;
 
     private Map<String, String> fileNameByLocaleTag;
