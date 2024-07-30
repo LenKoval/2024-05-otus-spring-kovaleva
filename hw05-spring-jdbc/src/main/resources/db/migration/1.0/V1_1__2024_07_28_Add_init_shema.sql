@@ -1,3 +1,6 @@
+--date: 2024-07-28
+--author: ElenaKovaleva
+
 create table authors (
     id bigserial,
     full_name varchar(255),
