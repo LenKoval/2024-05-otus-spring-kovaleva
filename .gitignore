@@ -9,6 +9,7 @@ dependency-reduced-pom.xml
 .settings
 .springBeans
 .sts4-cache
+spring-shell.log
 
 ### IntelliJ IDEA ###
 .idea
