@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static org.assertj.core.api.Assertions.assertThat;
+
 public class ModelsCommonTest {
 
     private static Set<Class<?>> entitiesClasses;
@@ -39,7 +40,7 @@ public class ModelsCommonTest {
             <version>${reflections.version}</version>
         </dependency>
          */
-        var reflections = new Reflections("ru.otus.hw.models");
+        var reflections = new Reflections("ru.otus.spring.models");
         entitiesClasses = reflections.getTypesAnnotatedWith(Entity.class);
 
     }
