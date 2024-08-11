@@ -1,9 +1,9 @@
 package ru.otus.spring.services;
 
-import ru.otus.spring.models.Genre;
+import ru.otus.spring.dtos.GenreDto;
 
 import java.util.List;
 
 public interface GenreService {
-    List<Genre> findAll();
+    List<GenreDto> findAll();
 }
