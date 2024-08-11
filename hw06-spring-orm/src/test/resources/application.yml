@@ -11,10 +11,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    sql:
-      init:
-        mode: always
-        data-locations: data.sql
 logging:
   level:
     org.springframework.orm.jpa.JpaTransactionManager: DEBUG
