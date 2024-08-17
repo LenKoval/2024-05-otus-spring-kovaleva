@@ -34,7 +34,6 @@ public class JpaCommentRepository implements CommentRepository {
     public Optional<Comment> findById(long id) {
         return entityManager.createQuery("select c from Comment c where c.id = :id", Comment.class)
                 .setParameter("id", id)
-                .setHint("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("comment-entity-graph"))
                 .getResultList().stream().findAny();
     }
 

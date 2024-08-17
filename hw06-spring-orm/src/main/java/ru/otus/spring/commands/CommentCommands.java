@@ -23,11 +23,11 @@ public class CommentCommands {
 
     @ShellMethod(value = "Insert comment", key = "cins")
     public String insertComment(String text, long bookId) {
-        return commentConverter.commentToString(commentService.insert(text, bookId));
+        return commentConverter.commentToString(commentService.create(text, bookId));
     }
 
     @ShellMethod(value = "Update comment", key = "cupd")
-    public String updateComment(long id, String text, long bookId) {
-        return commentConverter.commentToString(commentService.update(id, text, bookId));
+    public String updateComment(long id, String text) {
+        return commentConverter.commentToString(commentService.update(id, text));
     }
 }

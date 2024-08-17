@@ -3,9 +3,10 @@ package ru.otus.spring.repositories;
 import ru.otus.spring.models.Genre;
 
 import java.util.List;
+import java.util.Set;
 
 public interface GenreRepository {
     List<Genre> findAll();
 
-    List<Genre> findAllByIds(List<Long> ids);
+    List<Genre> findAllByIds(Set<Long> ids);
 }

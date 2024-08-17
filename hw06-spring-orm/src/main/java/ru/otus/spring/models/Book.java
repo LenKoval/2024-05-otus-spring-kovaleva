@@ -29,6 +29,8 @@ import java.util.List;
 @Entity
 @NamedEntityGraph(name = "book-entity-graph",
         attributeNodes = @NamedAttributeNode("author"))
+@NamedEntityGraph(name = "book-author-genres-entity-graph",
+        attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genres")})
 @Table(name = "books")
 public class Book {
 

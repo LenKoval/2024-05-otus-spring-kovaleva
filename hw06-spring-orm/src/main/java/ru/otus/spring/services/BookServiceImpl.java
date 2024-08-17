@@ -15,7 +15,7 @@ import ru.otus.spring.repositories.GenreRepository;
 
 import java.util.Optional;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -45,14 +45,14 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public BookDto insert(String title, long authorId, List<Long> genresIds) {
+    public BookDto create(String title, long authorId, Set<Long> genresIds) {
         Book book = save(0, title, authorId, genresIds);
         return bookMapper.toDto(book);
     }
 
     @Transactional
     @Override
-    public BookDto update(long id, String title, long authorId, List<Long> genresIds) {
+    public BookDto update(long id, String title, long authorId, Set<Long> genresIds) {
         Book book = save(id, title, authorId, genresIds);
         return bookMapper.toDto(book);
     }
@@ -63,7 +63,7 @@ public class BookServiceImpl implements BookService {
         bookRepository.deleteById(id);
     }
 
-    private Book save(long id, String title, long authorId, List<Long> genresIds) {
+    private Book save(long id, String title, long authorId, Set<Long> genresIds) {
         if (genresIds.isEmpty()) {
             throw new IllegalArgumentException("Genres ids must not be null");
         }
@@ -76,7 +76,15 @@ public class BookServiceImpl implements BookService {
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(authorId)));
 
-        Book book = new Book(id, title, author, new ArrayList<>(genres));
+        if (id == 0) {
+            throw new IllegalArgumentException("Book ids must no be null");
+        }
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Book with id %d not found".formatted(id)));
+
+        book.setTitle(title);
+        book.setAuthor(author);
+        book.setGenres(genres);
 
         return bookRepository.save(book);
     }

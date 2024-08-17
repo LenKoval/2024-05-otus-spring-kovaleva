@@ -21,7 +21,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@NamedEntityGraph(name = "comment-entity-graph", attributeNodes = {@NamedAttributeNode("book")})
 @Table(name = "comments")
 public class Comment {
 

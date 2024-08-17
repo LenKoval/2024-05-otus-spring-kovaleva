@@ -6,9 +6,9 @@ import java.util.Optional;
 
 public interface CommentService {
 
-    CommentDto insert(String text, long bookId);
+    CommentDto create(String text, long bookId);
 
-    CommentDto update(long id, String text, long bookId);
+    CommentDto update(long id, String text);
 
     Optional<CommentDto> findById(long id);
 }

@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Import;
 import ru.otus.spring.models.Genre;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,7 +45,7 @@ public class JpaGenresRepositoryTest {
     @ParameterizedTest
     @MethodSource("getDbGenres")
     void shouldReturnCorrectGenresByIds(Genre expectedGenre) {
-        var actualGenres = genreRepository.findAllByIds(List.of(expectedGenre.getId()));
+        var actualGenres = genreRepository.findAllByIds(Set.of(expectedGenre.getId()));
         for (Genre actualGenre : actualGenres) {
             assertThat(actualGenre)
                     .isEqualTo(expectedGenre);

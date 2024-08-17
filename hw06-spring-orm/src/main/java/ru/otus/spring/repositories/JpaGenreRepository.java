@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import ru.otus.spring.models.Genre;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class JpaGenreRepository implements GenreRepository {
     }
 
     @Override
-    public List<Genre> findAllByIds(List<Long> ids) {
+    public List<Genre> findAllByIds(Set<Long> ids) {
         return entityManager.createQuery("select g from Genre g where g.id in (:ids)", Genre.class)
                 .setParameter("ids", ids)
                 .getResultList();

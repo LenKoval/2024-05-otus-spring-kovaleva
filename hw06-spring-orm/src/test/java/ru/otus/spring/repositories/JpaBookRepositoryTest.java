@@ -12,9 +12,7 @@ import ru.otus.spring.models.Author;
 import ru.otus.spring.models.Book;
 import ru.otus.spring.models.Genre;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,14 +21,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @Import({JpaBookRepository.class, JpaGenreRepository.class})
 public class JpaBookRepositoryTest {
+
     @Autowired
-    private JpaBookRepository bookRepository;
+    JpaBookRepository bookRepository;
+    List<Author> dbAuthors;
 
-    private List<Author> dbAuthors;
+    List<Genre> dbGenres;
 
-    private List<Genre> dbGenres;
-
-    private List<Book> dbBooks;
+    List<Book> dbBooks;
 
     @BeforeEach
     void setUp() {
@@ -110,13 +108,11 @@ public class JpaBookRepositoryTest {
                 .map(id -> new Author(id, "Author_" + id))
                 .toList();
     }
-
     private static List<Genre> getDbGenres() {
         return IntStream.range(1, 7).boxed()
                 .map(id -> new Genre(id, "Genre_" + id))
                 .toList();
     }
-
     private static List<Book> getDbBooks(List<Author> dbAuthors, List<Genre> dbGenres) {
         return IntStream.range(1, 4).boxed()
                 .map(id -> new Book(id,
@@ -126,7 +122,6 @@ public class JpaBookRepositoryTest {
                 ))
                 .toList();
     }
-
     private static List<Book> getDbBooks() {
         var dbAuthors = getDbAuthors();
         var dbGenres = getDbGenres();

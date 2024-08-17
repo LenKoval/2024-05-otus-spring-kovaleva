@@ -25,7 +25,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public CommentDto insert(String text, long bookId) {
+    public CommentDto create(String text, long bookId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book with id %d not found".formatted(bookId)));
 
@@ -36,18 +36,16 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public CommentDto update(long id, String text, long bookId) {
+    public CommentDto update(long id, String text) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Comment with id %d not found".formatted(id)));
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException("Book with id %d not found".formatted(bookId)));
 
         comment.setText(text);
-        comment.setBook(book);
 
         return commentMapper.toDto(commentRepository.save(comment));
     }
 
+    @Transactional
     @Override
     public Optional<CommentDto> findById(long id) {
         return commentRepository.findById(id)

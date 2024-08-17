@@ -5,6 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.otus.spring.models.Book;
+import ru.otus.spring.models.Comment;
 
 import java.util.Optional;
 import java.util.List;
@@ -32,7 +33,11 @@ public class JpaBookRepository implements BookRepository {
 
     @Override
     public Optional<Book> findById(long id) {
-        return Optional.ofNullable(entityManager.find(Book.class, id));
+        return entityManager.createQuery("select b from Book b where b.id = :id", Book.class)
+                .setParameter("id", id)
+                .setHint("jakarta.persistence.fetchgraph"
+                        , entityManager.getEntityGraph("book-author-genres-entity-graph"))
+                .getResultList().stream().findAny();
     }
 
     @Override
