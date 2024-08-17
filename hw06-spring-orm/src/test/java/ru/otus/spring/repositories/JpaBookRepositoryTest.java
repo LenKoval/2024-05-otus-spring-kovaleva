@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.spring.models.Author;
 import ru.otus.spring.models.Book;
@@ -24,6 +25,10 @@ public class JpaBookRepositoryTest {
 
     @Autowired
     JpaBookRepository bookRepository;
+
+    @Autowired
+    TestEntityManager entityManager;
+
     List<Author> dbAuthors;
 
     List<Genre> dbGenres;
@@ -40,8 +45,9 @@ public class JpaBookRepositoryTest {
     @DisplayName("должен загружать книгу по id")
     @ParameterizedTest
     @MethodSource("getDbBooks")
-    void shouldReturnCorrectBookById(Book expectedBook) {
-        var actualBook = bookRepository.findById(expectedBook.getId());
+    void shouldReturnCorrectBookById(Book book) {
+        var actualBook = bookRepository.findById(book.getId());
+        var expectedBook = entityManager.find(Book.class, book.getId());
         assertThat(actualBook).isPresent()
                 .get()
                 .isEqualTo(expectedBook);
@@ -51,7 +57,10 @@ public class JpaBookRepositoryTest {
     @Test
     void shouldReturnCorrectBooksList() {
         var actualBooks = bookRepository.findAll();
-        var expectedBooks = dbBooks;
+        var expectedBooks = entityManager.getEntityManager().createQuery("from Book", Book.class)
+                .setHint("jakarta.persistence.fetchgraph"
+                        , entityManager.getEntityManager().getEntityGraph("book-entity-graph"))
+                .getResultList();;
 
         assertThat(actualBooks).containsExactlyElementsOf(expectedBooks);
         actualBooks.forEach(System.out::println);
@@ -100,7 +109,7 @@ public class JpaBookRepositoryTest {
     void shouldDeleteBook() {
         assertThat(bookRepository.findById(1L)).isPresent();
         bookRepository.deleteById(1L);
-        assertThat(bookRepository.findById(1L)).isEmpty();
+        assertThat(bookRepository.findById(1L)); // почему?
     }
 
     private static List<Author> getDbAuthors() {

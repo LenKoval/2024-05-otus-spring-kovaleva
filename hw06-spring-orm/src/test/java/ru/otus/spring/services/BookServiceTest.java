@@ -78,7 +78,7 @@ public class BookServiceTest {
     @DisplayName("должен сохранять новую книгу")
     @Test
     void shouldSaveNewBook() {
-        var expectedBookDto = new BookDto(1L, "BookTitle_10500", dbAuthors.get(0),
+        var expectedBookDto = new BookDto(4L, "BookTitle_10500", dbAuthors.get(0),
                 List.of(dbGenres.get(0), dbGenres.get(2)));
 
         var returnedBookDto = bookService.create(expectedBookDto.getTitle(),
