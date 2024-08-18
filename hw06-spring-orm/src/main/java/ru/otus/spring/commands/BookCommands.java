@@ -6,7 +6,6 @@ import org.springframework.shell.standard.ShellMethod;
 import ru.otus.spring.converters.BookConverter;
 import ru.otus.spring.services.BookService;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 

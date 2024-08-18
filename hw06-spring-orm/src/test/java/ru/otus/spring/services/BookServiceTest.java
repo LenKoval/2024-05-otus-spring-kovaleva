@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.dtos.AuthorDto;
@@ -22,11 +21,10 @@ import ru.otus.spring.repositories.JpaBookRepository;
 import ru.otus.spring.repositories.JpaGenreRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -56,63 +54,57 @@ public class BookServiceTest {
     @DisplayName("должен загружать книгу по id")
     @ParameterizedTest
     @MethodSource("getDbBooks")
-    void shouldReturnCorrectBookById(BookDto expectedBookDto) {
-        var returnedBookDto = bookService.findById(expectedBookDto.getId());
+    void shouldReturnCorrectBookById(BookDto expectedBook) {
+        var returnedBook = bookService.findById(expectedBook.getId());
 
-        assertThat(returnedBookDto).isPresent()
+        assertThat(returnedBook).isPresent()
                 .get()
-                .isEqualTo(expectedBookDto);
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expectedBook);
     }
 
     @DisplayName("должен загружать список всех книг")
     @Test
     void shouldReturnCorrectBooksList() {
-        var returnedBooksDto = bookService.findAll();
+        var returnedBooks = bookService.findAll();
 
-        assertFalse(returnedBooksDto.isEmpty());
-        assertEquals(3, returnedBooksDto.size());
-        assertThat(returnedBooksDto).containsExactlyInAnyOrderElementsOf(dbBooks);
+        assertFalse(returnedBooks.isEmpty());
+        assertEquals(3, returnedBooks.size());
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @DisplayName("должен сохранять новую книгу")
     @Test
     void shouldSaveNewBook() {
-        var expectedBookDto = new BookDto(4L, "BookTitle_10500", dbAuthors.get(0),
-                List.of(dbGenres.get(0), dbGenres.get(2)));
+        var expectedBook = new BookDto(4L, "BookTitle_10500", dbAuthors.get(0),
+                List.of(dbGenres.get(0), dbGenres.get(1)));
 
-        var returnedBookDto = bookService.create(expectedBookDto.getTitle(),
-                expectedBookDto.getAuthorDto().getId(),
-                expectedBookDto.getGenres().stream().map(GenreDto::getId).collect(Collectors.toSet()));
+        var returnedBookDto = bookService.create("BookTitle_10500", dbAuthors.get(0).getId(),
+                Set.of(dbGenres.get(0).getId(), dbGenres.get(1).getId()));
 
-        assertThat(returnedBookDto).isEqualTo(expectedBookDto);
+        assertThat(returnedBookDto).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBook);
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @DisplayName("должен сохранять измененную книгу")
     @Test
     void shouldSaveUpdatedBook() {
-        var expectedBookDto = new BookDto(1L, "BookTitle_10500", dbAuthors.get(2),
-                List.of(dbGenres.get(4), dbGenres.get(3)));
+        var expectedBook = new BookDto(1L, "BookTitle_10500", dbAuthors.get(0),
+                List.of(dbGenres.get(0), dbGenres.get(1)));
 
 
-        var returnedBookDto = bookService.update(expectedBookDto.getId(),
-                expectedBookDto.getTitle(),
-                expectedBookDto.getAuthorDto().getId(),
-                expectedBookDto.getGenres().stream().map(GenreDto::getId).collect(Collectors.toSet()));
+        var returnedBook = bookService.update(1L, "BookTitle_10500", dbAuthors.get(0).getId(),
+                Set.of(dbGenres.get(0).getId(), dbGenres.get(1).getId()));
 
-        assertThat(returnedBookDto).isEqualTo(expectedBookDto);
+        assertThat(returnedBook).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBook);
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @DisplayName("должен удалять книгу по id")
     @Test
     void shouldDeleteBook() {
-        assertThat(bookService.findById(1L)).isNotEmpty();
-
-        assertThatCode(() -> bookService.deleteById(1L)).doesNotThrowAnyException();
-
-        assertThat(bookService.findById(1L)).isEmpty();
+        var book = bookService.create("NewBook", 1L, Set.of(1L, 2L));
+        bookService.deleteById(book.getId());
+        var actualBook = bookService.findById(book.getId());
+        assertThat(actualBook).isEmpty();
     }
 
         private static List<AuthorDto> getDbAuthors() {

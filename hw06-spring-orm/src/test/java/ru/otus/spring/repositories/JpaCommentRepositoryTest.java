@@ -7,7 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.spring.models.Author;
 import ru.otus.spring.models.Book;
@@ -15,7 +14,6 @@ import ru.otus.spring.models.Comment;
 import ru.otus.spring.models.Genre;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,9 +25,6 @@ public class JpaCommentRepositoryTest {
 
     @Autowired
     JpaCommentRepository commentRepository;
-
-    @Autowired
-    TestEntityManager entityManager;
 
     List<Comment> dbComments;
 
@@ -52,10 +47,11 @@ public class JpaCommentRepositoryTest {
     @MethodSource("getDbComments")
     void shouldReturnCorrectCommentById(Comment comment) {
         var actualComment = commentRepository.findById(comment.getId());
-        var expectedComment = entityManager.find(Comment.class, comment.getId()); //????
         assertThat(actualComment).isPresent()
                 .get()
-                .isEqualTo(expectedComment);
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(comment);
     }
 
     @Test

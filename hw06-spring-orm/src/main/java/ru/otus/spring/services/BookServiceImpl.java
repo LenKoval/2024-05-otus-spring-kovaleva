@@ -76,15 +76,7 @@ public class BookServiceImpl implements BookService {
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(authorId)));
 
-        if (id == 0) {
-            throw new IllegalArgumentException("Book ids must no be null");
-        }
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Book with id %d not found".formatted(id)));
-
-        book.setTitle(title);
-        book.setAuthor(author);
-        book.setGenres(genres);
+        Book book = new Book(id, title, author, genres);
 
         return bookRepository.save(book);
     }
