@@ -46,24 +46,10 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public BookDto create(String title, long authorId, Set<Long> genresIds) {
-        Book book = save(0, title, authorId, genresIds);
-        return bookMapper.toDto(book);
-    }
+        if (title.isEmpty()) {
+            throw new IllegalArgumentException("Title must not be null");
+        }
 
-    @Transactional
-    @Override
-    public BookDto update(long id, String title, long authorId, Set<Long> genresIds) {
-        Book book = save(id, title, authorId, genresIds);
-        return bookMapper.toDto(book);
-    }
-
-    @Transactional
-    @Override
-    public void deleteById(long id) {
-        bookRepository.deleteById(id);
-    }
-
-    private Book save(long id, String title, long authorId, Set<Long> genresIds) {
         if (genresIds.isEmpty()) {
             throw new IllegalArgumentException("Genres ids must not be null");
         }
@@ -76,8 +62,40 @@ public class BookServiceImpl implements BookService {
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(authorId)));
 
-        Book book = new Book(id, title, author, genres);
+        Book book = new Book(0, title, author, genres);
+        bookRepository.save(book);
+        return bookMapper.toDto(book);
+    }
 
-        return bookRepository.save(book);
+    @Transactional
+    @Override
+    public BookDto update(long id, String title, long authorId, Set<Long> genresIds) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Book with id %d not found".formatted(id)));
+
+        if (genresIds.isEmpty()) {
+            throw new IllegalArgumentException("Genres ids must not be null");
+        }
+
+        List<Genre> genres = genreRepository.findAllByIds(genresIds);
+        if (genres.isEmpty() || genresIds.size() != genres.size()) {
+            throw new EntityNotFoundException("One or all genres with ids %s not found".formatted(genresIds));
+        }
+
+        Author author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(authorId)));
+
+        book.setTitle(title);
+        book.setAuthor(author);
+        book.setGenres(genres);
+        bookRepository.save(book);
+
+        return bookMapper.toDto(book);
+    }
+
+    @Transactional
+    @Override
+    public void deleteById(long id) {
+        bookRepository.deleteById(id);
     }
 }

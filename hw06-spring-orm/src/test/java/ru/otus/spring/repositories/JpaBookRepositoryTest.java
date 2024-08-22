@@ -35,6 +35,8 @@ public class JpaBookRepositoryTest {
 
     List<Book> dbBooks;
 
+    long FIRST_BOOK_ID = 1L;
+
     @BeforeEach
     void setUp() {
         dbAuthors = getDbAuthors();
@@ -107,9 +109,11 @@ public class JpaBookRepositoryTest {
     @DisplayName("должен удалять книгу по id ")
     @Test
     void shouldDeleteBook() {
-        assertThat(bookRepository.findById(1L)).isPresent();
-        bookRepository.deleteById(1L);
-        assertThat(bookRepository.findById(1L)); // почему?
+        Book firstBook = entityManager.find(Book.class, FIRST_BOOK_ID);
+        assertThat(firstBook).isNotNull();
+        bookRepository.deleteById(FIRST_BOOK_ID);
+        Book notFoundBook = entityManager.find(Book.class, FIRST_BOOK_ID);
+        assertThat(notFoundBook).isNull();
     }
 
     private static List<Author> getDbAuthors() {
