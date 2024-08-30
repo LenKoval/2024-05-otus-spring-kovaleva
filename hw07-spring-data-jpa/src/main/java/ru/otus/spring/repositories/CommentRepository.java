@@ -1,16 +1,7 @@
 package ru.otus.spring.repositories;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.otus.spring.models.Comment;
 
-import java.util.List;
-import java.util.Optional;
-
-public interface CommentRepository {
-    Comment save(Comment comment);
-
-    void deleteById(long id);
-
-    Optional<Comment> findById(long id);
-
-    List<Comment> findByBookId(long bookId);
+public interface CommentRepository extends JpaRepository<Comment, Long> {
 }

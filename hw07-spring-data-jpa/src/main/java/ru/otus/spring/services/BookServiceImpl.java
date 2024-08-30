@@ -54,7 +54,7 @@ public class BookServiceImpl implements BookService {
             throw new IllegalArgumentException("Genres ids must not be null");
         }
 
-        List<Genre> genres = genreRepository.findAllByIds(genresIds);
+        List<Genre> genres = genreRepository.findAllById(genresIds);
         if (genres.isEmpty() || genresIds.size() != genres.size()) {
             throw new EntityNotFoundException("One or all genres with ids %s not found".formatted(genresIds));
         }
@@ -77,7 +77,7 @@ public class BookServiceImpl implements BookService {
             throw new IllegalArgumentException("Genres ids must not be null");
         }
 
-        List<Genre> genres = genreRepository.findAllByIds(genresIds);
+        List<Genre> genres = genreRepository.findAllById(genresIds);
         if (genres.isEmpty() || genresIds.size() != genres.size()) {
             throw new EntityNotFoundException("One or all genres with ids %s not found".formatted(genresIds));
         }

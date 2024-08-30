@@ -7,7 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import ru.otus.spring.models.Genre;
 
 import java.util.List;
@@ -18,11 +17,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Репозиторий на основе Jpa для работы с жанрами книг")
 @DataJpaTest
-@Import({JpaGenreRepository.class})
 public class JpaGenresRepositoryTest {
 
     @Autowired
-    JpaGenreRepository genreRepository;
+    GenreRepository genreRepository;
 
     List<Genre> dbGenres;
 
@@ -45,7 +43,7 @@ public class JpaGenresRepositoryTest {
     @ParameterizedTest
     @MethodSource("getDbGenres")
     void shouldReturnCorrectGenresByIds(Genre expectedGenre) {
-        var actualGenres = genreRepository.findAllByIds(Set.of(expectedGenre.getId()));
+        var actualGenres = genreRepository.findAllById(Set.of(expectedGenre.getId()));
         for (Genre actualGenre : actualGenres) {
             assertThat(actualGenre)
                     .isEqualTo(expectedGenre);

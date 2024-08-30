@@ -17,9 +17,6 @@ import ru.otus.spring.dtos.GenreDto;
 import ru.otus.spring.mappers.AuthorMapper;
 import ru.otus.spring.mappers.BookMapper;
 import ru.otus.spring.mappers.GenreMapper;
-import ru.otus.spring.repositories.JpaAuthorRepository;
-import ru.otus.spring.repositories.JpaBookRepository;
-import ru.otus.spring.repositories.JpaGenreRepository;
 
 import java.util.List;
 import java.util.Set;
@@ -31,8 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @DisplayName("Сервис для работы с книгами ")
 @DataJpaTest
-@Import({JpaBookRepository.class, JpaGenreRepository.class, JpaAuthorRepository.class
-        , BookMapper.class, AuthorMapper.class, GenreMapper.class, BookServiceImpl.class})
+@Import({BookMapper.class, AuthorMapper.class, GenreMapper.class, BookServiceImpl.class})
 @Transactional(propagation = Propagation.NEVER)
 public class BookServiceTest {
 

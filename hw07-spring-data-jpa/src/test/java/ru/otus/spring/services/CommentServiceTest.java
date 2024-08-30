@@ -8,15 +8,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.mappers.CommentMapper;
-import ru.otus.spring.repositories.JpaBookRepository;
-import ru.otus.spring.repositories.JpaCommentRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Сервис для работы с комментариями")
 @DataJpaTest
-@Import({JpaCommentRepository.class, CommentServiceImpl.class
-        , JpaBookRepository.class, JpaCommentRepository.class, CommentMapper.class})
+@Import({CommentServiceImpl.class, CommentMapper.class})
 @Transactional(propagation = Propagation.NEVER)
 public class CommentServiceTest {
 
