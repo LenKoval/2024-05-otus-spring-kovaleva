@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.dtos.AuthorDto;
@@ -73,6 +74,7 @@ public class BookServiceTest {
         assertEquals(3, returnedBooks.size());
     }
 
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
     @DisplayName("должен сохранять новую книгу")
     @Test
     void shouldSaveNewBook() {
@@ -85,6 +87,7 @@ public class BookServiceTest {
         assertThat(returnedBookDto).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBook);
     }
 
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
     @DisplayName("должен сохранять измененную книгу")
     @Test
     void shouldSaveUpdatedBook() {
