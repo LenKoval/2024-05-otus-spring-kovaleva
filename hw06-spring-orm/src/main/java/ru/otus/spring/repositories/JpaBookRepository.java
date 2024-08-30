@@ -31,8 +31,6 @@ public class JpaBookRepository implements BookRepository {
         var check = entityManager.find(Book.class, id);
         if (check != null) {
             entityManager.remove(check);
-        } else {
-            throw new EntityNotFoundException("Book with id %d not found".formatted(id));
         }
     }
 
