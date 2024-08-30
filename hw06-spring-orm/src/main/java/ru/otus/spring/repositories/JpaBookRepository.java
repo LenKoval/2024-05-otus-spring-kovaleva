@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import ru.otus.spring.exceptions.EntityNotFoundException;
 import ru.otus.spring.models.Book;
 
 import java.util.Optional;
