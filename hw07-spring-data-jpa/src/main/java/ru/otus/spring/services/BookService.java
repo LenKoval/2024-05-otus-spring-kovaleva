@@ -1,6 +1,7 @@
 package ru.otus.spring.services;
 
 import ru.otus.spring.dtos.BookDto;
+import ru.otus.spring.models.Book;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,4 +17,6 @@ public interface BookService {
     BookDto update(long id, String title, long authorId, Set<Long> genresIds);
 
     void deleteById(long id);
+
+    Book isValid(Long id);
 }

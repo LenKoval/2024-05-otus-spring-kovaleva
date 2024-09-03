@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.jdbc.Sql;
 import ru.otus.spring.models.Author;
 import ru.otus.spring.models.Book;
 import ru.otus.spring.models.Genre;
@@ -19,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Репозиторий на основе Jpa для работы с книгами ")
 @DataJpaTest
+@Sql("db/migration/data.sql")
 public class JpaBookRepositoryTest {
 
     @Autowired
@@ -57,12 +59,9 @@ public class JpaBookRepositoryTest {
     @Test
     void shouldReturnCorrectBooksList() {
         var actualBooks = bookRepository.findAll();
-        var expectedBooks = entityManager.getEntityManager().createQuery("from Book", Book.class)
-                .setHint("jakarta.persistence.fetchgraph"
-                        , entityManager.getEntityManager().getEntityGraph("book-entity-graph"))
-                .getResultList();;
+        var expectedBooks = dbBooks;
 
-        assertThat(actualBooks).containsExactlyElementsOf(expectedBooks);
+        assertThat(actualBooks).usingRecursiveComparison().isEqualTo(expectedBooks);
         actualBooks.forEach(System.out::println);
     }
 

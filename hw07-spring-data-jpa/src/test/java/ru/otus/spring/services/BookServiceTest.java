@@ -28,7 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @DisplayName("Сервис для работы с книгами ")
 @DataJpaTest
-@Import({BookMapper.class, AuthorMapper.class, GenreMapper.class, BookServiceImpl.class})
+@Import({BookMapper.class, AuthorMapper.class, GenreMapper.class,
+        BookServiceImpl.class, GenreServiceImpl.class, AuthorServiceImpl.class})
 @Transactional(propagation = Propagation.NEVER)
 public class BookServiceTest {
 
@@ -68,6 +69,9 @@ public class BookServiceTest {
 
         assertFalse(returnedBooks.isEmpty());
         assertEquals(3, returnedBooks.size());
+        assertThat(returnedBooks)
+                .usingRecursiveComparison()
+                .isEqualTo(dbBooks);
     }
 
     @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)

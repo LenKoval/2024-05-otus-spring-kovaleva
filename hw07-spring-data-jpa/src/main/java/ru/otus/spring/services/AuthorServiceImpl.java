@@ -3,7 +3,9 @@ package ru.otus.spring.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.dtos.AuthorDto;
+import ru.otus.spring.exceptions.EntityNotFoundException;
 import ru.otus.spring.mappers.AuthorMapper;
+import ru.otus.spring.models.Author;
 import ru.otus.spring.repositories.AuthorRepository;
 
 import java.util.List;
@@ -20,5 +22,11 @@ public class AuthorServiceImpl implements AuthorService {
         return authorRepository.findAll().stream()
                 .map(authorMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public Author findById(Long id) {
+        return authorRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(id)));
     }
 }

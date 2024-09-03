@@ -36,10 +36,8 @@ public class JpaAuthorRepositoryTest {
     @Test
     void shouldReturnCorrectAuthorsList() {
         var actualAuthor = authorRepository.findAll();
-        var expectedAuthor = entityManager.getEntityManager()
-                .createQuery("from Author", Author.class).getResultList();
-        assertThat(expectedAuthor).isNotEmpty()
-                .isEqualTo(actualAuthor);
+        var expectedAuthor = dbAuthors;
+        assertThat(actualAuthor).usingRecursiveComparison().isEqualTo(expectedAuthor);
     }
 
     @DisplayName("должен загружать автора по id")
