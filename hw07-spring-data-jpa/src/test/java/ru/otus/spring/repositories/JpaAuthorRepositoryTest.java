@@ -7,7 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import ru.otus.spring.models.Author;
 
 import java.util.List;
@@ -21,9 +20,6 @@ public class JpaAuthorRepositoryTest {
 
     @Autowired
     AuthorRepository authorRepository;
-
-    @Autowired
-    TestEntityManager entityManager;
 
     List<Author> dbAuthors;
 
@@ -45,10 +41,10 @@ public class JpaAuthorRepositoryTest {
     @MethodSource("getDbAuthors")
     void shouldReturnCorrectAuthorById(Author author) {
         var actualAuthor = authorRepository.findById(author.getId());
-        var expectedAuthor = entityManager.find(Author.class, author.getId());
         assertThat(actualAuthor).isPresent()
                 .get()
-                .isEqualTo(expectedAuthor);
+                .usingRecursiveComparison()
+                .isEqualTo(author);
     }
 
     private static List<Author> getDbAuthors() {

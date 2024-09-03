@@ -20,7 +20,6 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentMapper commentMapper;
 
-    @Autowired
     private final BookService bookService;
 
     @Transactional

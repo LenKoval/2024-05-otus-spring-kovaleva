@@ -7,13 +7,17 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.spring.mappers.AuthorMapper;
+import ru.otus.spring.mappers.BookMapper;
 import ru.otus.spring.mappers.CommentMapper;
+import ru.otus.spring.mappers.GenreMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Сервис для работы с комментариями")
 @DataJpaTest
-@Import({CommentServiceImpl.class, CommentMapper.class})
+@Import({CommentServiceImpl.class, CommentMapper.class, BookMapper.class, AuthorMapper.class, GenreMapper.class,
+        BookServiceImpl.class, GenreServiceImpl.class, AuthorServiceImpl.class})
 @Transactional(propagation = Propagation.NEVER)
 public class CommentServiceTest {
 

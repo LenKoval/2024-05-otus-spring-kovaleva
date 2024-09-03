@@ -20,10 +20,8 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
 
-    @Autowired
     private final GenreService genreService;
 
-    @Autowired
     private final AuthorService authorService;
 
     private final BookMapper bookMapper;

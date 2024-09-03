@@ -7,8 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.jdbc.Sql;
 import ru.otus.spring.models.Author;
 import ru.otus.spring.models.Book;
 import ru.otus.spring.models.Genre;
@@ -20,14 +18,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Репозиторий на основе Jpa для работы с книгами ")
 @DataJpaTest
-@Sql("db/migration/data.sql")
 public class JpaBookRepositoryTest {
 
     @Autowired
     BookRepository bookRepository;
-
-    @Autowired
-    TestEntityManager entityManager;
 
     List<Author> dbAuthors;
 
@@ -35,7 +29,7 @@ public class JpaBookRepositoryTest {
 
     List<Book> dbBooks;
 
-    long FIRST_BOOK_ID = 1L;
+    Long FIRST_BOOK_ID = 1L;
 
     @BeforeEach
     void setUp() {
@@ -49,10 +43,10 @@ public class JpaBookRepositoryTest {
     @MethodSource("getDbBooks")
     void shouldReturnCorrectBookById(Book book) {
         var actualBook = bookRepository.findById(book.getId());
-        var expectedBook = entityManager.find(Book.class, book.getId());
         assertThat(actualBook).isPresent()
                 .get()
-                .isEqualTo(expectedBook);
+                .usingRecursiveComparison()
+                .isEqualTo(book);
     }
 
     @DisplayName("должен загружать список всех книг")
@@ -106,11 +100,11 @@ public class JpaBookRepositoryTest {
     @DisplayName("должен удалять книгу по id ")
     @Test
     void shouldDeleteBook() {
-        Book firstBook = entityManager.find(Book.class, FIRST_BOOK_ID);
-        assertThat(firstBook).isNotNull();
+        var firstBook = bookRepository.findById(FIRST_BOOK_ID);
+        assertThat(firstBook).isNotEmpty();
         bookRepository.deleteById(FIRST_BOOK_ID);
-        Book notFoundBook = entityManager.find(Book.class, FIRST_BOOK_ID);
-        assertThat(notFoundBook).isNull();
+        var notFoundBook = bookRepository.findById(FIRST_BOOK_ID);
+        assertThat(notFoundBook).isEmpty();
     }
 
     private static List<Author> getDbAuthors() {
