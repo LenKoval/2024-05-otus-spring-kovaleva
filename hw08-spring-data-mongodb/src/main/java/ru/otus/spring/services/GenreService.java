@@ -9,5 +9,5 @@ import java.util.Set;
 public interface GenreService {
     List<GenreDto> findAll();
 
-    List<Genre> isValid(Set<Long> genresIds);
+    List<Genre> isValid(Set<String> genresIds);
 }

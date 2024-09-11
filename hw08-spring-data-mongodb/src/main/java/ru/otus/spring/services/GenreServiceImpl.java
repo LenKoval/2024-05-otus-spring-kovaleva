@@ -27,7 +27,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public List<Genre> isValid(Set<Long> genresIds) {
+    public List<Genre> isValid(Set<String> genresIds) {
         if (genresIds.isEmpty()) {
             throw new IllegalArgumentException("Genres ids must not be null");
         }

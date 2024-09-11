@@ -23,17 +23,17 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public CommentDto create(String text, long bookId) {
-        Comment comment = new Comment(0, text, bookService.isValid(bookId));
+    public CommentDto create(String text, String bookId) {
+        Comment comment = new Comment(text, bookService.isValid(bookId));
 
         return commentMapper.toDto(commentRepository.save(comment));
     }
 
     @Transactional
     @Override
-    public CommentDto update(long id, String text) {
+    public CommentDto update(String id, String text) {
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Comment with id %d not found".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException("Comment with id %s not found".formatted(id)));
 
         comment.setText(text);
 
@@ -42,8 +42,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public Optional<CommentDto> findById(long id) {
-        return commentRepository.findById(id)
+    public Optional<CommentDto> findById(String id) {
+        return commentRepository.findByBookId(id)
                 .map(commentMapper::toDto);
     }
 }

@@ -11,11 +11,17 @@ import java.util.List;
 @AllArgsConstructor
 public class BookDto {
 
-    private long id;
+    private String id;
 
     private String title;
 
     private AuthorDto authorDto;
 
     private List<GenreDto> genres;
+
+    public BookDto(String title, AuthorDto authorDto, List<GenreDto> genres) {
+        this.title = title;
+        this.authorDto = authorDto;
+        this.genres = genres;
+    }
 }

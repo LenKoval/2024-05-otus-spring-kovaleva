@@ -15,19 +15,19 @@ public class CommentCommands {
     private final CommentConverter commentConverter;
 
     @ShellMethod(value = "Find comment by bookId", key = "cbid")
-    public String findCommentById(long id) {
+    public String findCommentById(String id) {
         return commentService.findById(id)
                 .map(commentConverter::commentToString)
-                .orElse("Comment with id %d not found".formatted(id));
+                .orElse("Comment with id %s not found".formatted(id));
     }
 
     @ShellMethod(value = "Insert comment", key = "cins")
-    public String insertComment(String text, long bookId) {
+    public String insertComment(String text, String bookId) {
         return commentConverter.commentToString(commentService.create(text, bookId));
     }
 
     @ShellMethod(value = "Update comment", key = "cupd")
-    public String updateComment(long id, String text) {
+    public String updateComment(String id, String text) {
         return commentConverter.commentToString(commentService.update(id, text));
     }
 }

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import ru.otus.spring.models.Genre;
 
 import java.util.List;
@@ -15,9 +15,9 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("Репозиторий на основе Jpa для работы с жанрами книг")
-@DataJpaTest
-public class JpaGenresRepositoryTest {
+@DisplayName("Репозиторий на основе MongoDatabase для работы с жанрами книг")
+@DataMongoTest
+public class MongoGenresRepositoryTest {
 
     @Autowired
     GenreRepository genreRepository;
@@ -52,7 +52,7 @@ public class JpaGenresRepositoryTest {
 
     private static List<Genre> getDbGenres() {
         return IntStream.range(1, 7).boxed()
-                .map(id -> new Genre(id, "Genre_" + id))
+                .map(id -> new Genre(String.format("%s", id), "Genre_" + id))
                 .toList();
     }
 }

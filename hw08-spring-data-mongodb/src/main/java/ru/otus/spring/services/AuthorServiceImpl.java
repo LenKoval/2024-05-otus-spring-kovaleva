@@ -25,7 +25,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author findById(Long id) {
+    public Author findById(String id) {
         return authorRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(id)));
     }

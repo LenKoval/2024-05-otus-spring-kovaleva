@@ -27,7 +27,7 @@ public class BookServiceImpl implements BookService {
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<BookDto> findById(long id) {
+    public Optional<BookDto> findById(String id) {
         return bookRepository.findById(id)
                 .map(bookMapper::toDto);
     }
@@ -42,19 +42,19 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public BookDto create(String title, long authorId, Set<Long> genresIds) {
+    public BookDto create(String title, String authorId, Set<String> genresIds) {
         if (title.isEmpty()) {
             throw new IllegalArgumentException("Title must not be null");
         }
 
-        Book book = new Book(0, title, authorService.findById(authorId), genreService.isValid(genresIds));
+        Book book = new Book(null, title, authorService.findById(authorId), genreService.isValid(genresIds));
         bookRepository.save(book);
         return bookMapper.toDto(book);
     }
 
     @Transactional
     @Override
-    public BookDto update(long id, String title, long authorId, Set<Long> genresIds) {
+    public BookDto update(String id, String title, String authorId, Set<String> genresIds) {
         Book book = isValid(id);
 
         book.setTitle(title);
@@ -67,12 +67,12 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public void deleteById(long id) {
+    public void deleteById(String id) {
         bookRepository.deleteById(id);
     }
 
     @Override
-    public Book isValid(Long id) {
+    public Book isValid(String id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Book with id %d not found".formatted(id)));
     }

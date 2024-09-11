@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
@@ -27,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @DisplayName("Сервис для работы с книгами ")
-@DataJpaTest
+@DataMongoTest
 @Import({BookMapper.class, AuthorMapper.class, GenreMapper.class,
         BookServiceImpl.class, GenreServiceImpl.class, AuthorServiceImpl.class})
 @Transactional(propagation = Propagation.NEVER)
@@ -78,7 +79,7 @@ public class BookServiceTest {
     @DisplayName("должен сохранять новую книгу")
     @Test
     void shouldSaveNewBook() {
-        var expectedBook = new BookDto(4L, "BookTitle_10500", dbAuthors.get(0),
+        var expectedBook = new BookDto("BookTitle_10500", dbAuthors.get(0),
                 List.of(dbGenres.get(0), dbGenres.get(1)));
 
         var returnedBookDto = bookService.create("BookTitle_10500", dbAuthors.get(0).getId(),
@@ -91,11 +92,11 @@ public class BookServiceTest {
     @DisplayName("должен сохранять измененную книгу")
     @Test
     void shouldSaveUpdatedBook() {
-        var expectedBook = new BookDto(1L, "BookTitle_10500", dbAuthors.get(0),
+        var expectedBook = new BookDto("1", "BookTitle_10500", dbAuthors.get(0),
                 List.of(dbGenres.get(0), dbGenres.get(1)));
 
 
-        var returnedBook = bookService.update(1L, "BookTitle_10500", dbAuthors.get(0).getId(),
+        var returnedBook = bookService.update("1", "BookTitle_10500", dbAuthors.get(0).getId(),
                 Set.of(dbGenres.get(0).getId(), dbGenres.get(1).getId()));
 
         assertThat(returnedBook).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBook);
@@ -104,7 +105,7 @@ public class BookServiceTest {
     @DisplayName("должен удалять книгу по id")
     @Test
     void shouldDeleteBook() {
-        var book = bookService.create("NewBook", 1L, Set.of(1L, 2L));
+        var book = bookService.create("NewBook", "1", Set.of("1", "2"));
         bookService.deleteById(book.getId());
         var actualBook = bookService.findById(book.getId());
         assertThat(actualBook).isEmpty();
@@ -112,19 +113,19 @@ public class BookServiceTest {
 
         private static List<AuthorDto> getDbAuthors() {
             return IntStream.range(1, 4).boxed()
-                    .map(id -> new AuthorDto(id, "Author_" + id))
+                    .map(id -> new AuthorDto(String.format("%s", id), "Author_" + id))
                     .toList();
         }
 
         private static List<GenreDto> getDbGenres() {
             return IntStream.range(1, 7).boxed()
-                    .map(id -> new GenreDto(id, "Genre_" + id))
+                    .map(id -> new GenreDto(String.format("%s", id), "Genre_" + id))
                     .toList();
         }
 
     private static List<BookDto> getDbBooks(List<AuthorDto> dbAuthors, List<GenreDto> dbGenres) {
         return IntStream.range(1, 4).boxed()
-                .map(id -> new BookDto(id,
+                .map(id -> new BookDto(String.format("%s", id),
                         "BookTitle_" + id,
                         dbAuthors.get((id - 1)),
                         dbGenres.subList(((id - 1) * 2), ((id - 1) * 2 + 2))
