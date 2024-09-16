@@ -6,8 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.dtos.BookDto;
 import ru.otus.spring.exceptions.EntityNotFoundException;
 import ru.otus.spring.mappers.BookMapper;
+import ru.otus.spring.models.Author;
 import ru.otus.spring.models.Book;
+import ru.otus.spring.repositories.AuthorRepository;
 import ru.otus.spring.repositories.BookRepository;
+import ru.otus.spring.repositories.GenreRepository;
 
 import java.util.Optional;
 import java.util.List;
@@ -19,9 +22,9 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
 
-    private final GenreService genreService;
+    private final GenreRepository genreRepository;
 
-    private final AuthorService authorService;
+    private final AuthorRepository authorRepository;
 
     private final BookMapper bookMapper;
 
@@ -47,7 +50,10 @@ public class BookServiceImpl implements BookService {
             throw new IllegalArgumentException("Title must not be null");
         }
 
-        Book book = new Book(null, title, authorService.findById(authorId), genreService.isValid(genresIds));
+        Author author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new EntityNotFoundException("Author with id %s not found".formatted(authorId)));
+
+        Book book = new Book(null, title, author, genreRepository.findAllById(genresIds));
         bookRepository.save(book);
         return bookMapper.toDto(book);
     }
@@ -57,9 +63,12 @@ public class BookServiceImpl implements BookService {
     public BookDto update(String id, String title, String authorId, Set<String> genresIds) {
         Book book = isValid(id);
 
+        Author author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new EntityNotFoundException("Author with id %s not found".formatted(authorId)));
+
         book.setTitle(title);
-        book.setAuthor(authorService.findById(authorId));
-        book.setGenres(genreService.isValid(genresIds));
+        book.setAuthor(author);
+        book.setGenres(genreRepository.findAllById(genresIds));
         bookRepository.save(book);
 
         return bookMapper.toDto(book);

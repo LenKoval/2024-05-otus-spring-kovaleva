@@ -9,8 +9,10 @@ import ru.otus.spring.models.Comment;
 @Component
 public class CommentMapper {
 
+    private final BookMapper bookMapper;
+
     public CommentDto toDto(Comment comment) {
         return new CommentDto(
-                comment.getId(), comment.getText(), comment.getBook().getId(), comment.getBook().getTitle());
+                comment.getId(), comment.getText(), bookMapper.toDto(comment.getBook()));
     }
 }

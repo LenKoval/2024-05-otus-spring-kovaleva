@@ -1,11 +1,11 @@
 package ru.otus.spring.models;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -18,10 +18,9 @@ public class Comment {
     @Id
     private String id;
 
-    @Indexed(unique = true)
     private String text;
 
-    @Indexed(unique = true)
+    @DBRef
     private Book book;
 
     public Comment(String text, Book book) {

@@ -6,6 +6,8 @@ import org.springframework.shell.standard.ShellMethod;
 import ru.otus.spring.converters.CommentConverter;
 import ru.otus.spring.services.CommentService;
 
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @ShellComponent
 public class CommentCommands {
@@ -17,8 +19,9 @@ public class CommentCommands {
     @ShellMethod(value = "Find comment by bookId", key = "cbid")
     public String findCommentById(String id) {
         return commentService.findById(id)
+                .stream()
                 .map(commentConverter::commentToString)
-                .orElse("Comment with id %s not found".formatted(id));
+                .collect(Collectors.joining(";" + System.lineSeparator()));
     }
 
     @ShellMethod(value = "Insert comment", key = "cins")

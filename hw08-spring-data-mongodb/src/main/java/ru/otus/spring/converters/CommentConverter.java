@@ -8,6 +8,6 @@ public class CommentConverter {
 
     public String commentToString(CommentDto commentDto) {
         return "Book: %s, Comment: %s, Id: %s"
-                .formatted(commentDto.getBookTitle(), commentDto.getText(), commentDto.getId());
+                .formatted(commentDto.getBookDto().getTitle(), commentDto.getText(), commentDto.getId());
     }
 }

@@ -2,7 +2,7 @@ package ru.otus.spring.services;
 
 import ru.otus.spring.dtos.CommentDto;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface CommentService {
 
@@ -10,5 +10,5 @@ public interface CommentService {
 
     CommentDto update(String id, String text);
 
-    Optional<CommentDto> findById(String id);
+    List<CommentDto> findById(String id);
 }

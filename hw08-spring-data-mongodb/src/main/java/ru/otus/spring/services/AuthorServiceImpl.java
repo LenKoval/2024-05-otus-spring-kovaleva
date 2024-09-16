@@ -25,8 +25,10 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author findById(String id) {
-        return authorRepository.findById(id)
+    public AuthorDto findById(String id) {
+        Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(id)));
+
+        return authorMapper.toDto(author);
     }
 }

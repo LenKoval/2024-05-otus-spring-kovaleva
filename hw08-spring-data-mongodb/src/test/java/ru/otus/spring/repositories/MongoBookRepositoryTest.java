@@ -7,9 +7,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
+import ru.otus.spring.event.BookDeletionEventListener;
 import ru.otus.spring.models.Author;
 import ru.otus.spring.models.Book;
+import ru.otus.spring.models.Comment;
 import ru.otus.spring.models.Genre;
 
 import java.util.List;
@@ -18,15 +21,21 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Репозиторий на основе MongoDatabase для работы с книгами ")
+@Import(BookDeletionEventListener.class)
 @DataMongoTest
 public class MongoBookRepositoryTest {
 
     @Autowired
     BookRepository bookRepository;
 
+    @Autowired
+    CommentRepository commentRepository;
+
     List<Author> dbAuthors;
 
     List<Genre> dbGenres;
+
+    List<Comment> dbComments;
 
     List<Book> dbBooks;
 
@@ -37,6 +46,7 @@ public class MongoBookRepositoryTest {
         dbAuthors = getDbAuthors();
         dbGenres = getDbGenres();
         dbBooks = getDbBooks(dbAuthors, dbGenres);
+        dbComments = getDbComments(dbBooks);
     }
 
     @DisplayName("должен загружать книгу по id")
@@ -87,6 +97,7 @@ public class MongoBookRepositoryTest {
         assertThat(bookRepository.findById(expectedBook.getId()))
                 .isPresent()
                 .get()
+                .usingRecursiveComparison()
                 .isNotEqualTo(expectedBook);
 
         var returnedBook = bookRepository.save(expectedBook);
@@ -105,11 +116,16 @@ public class MongoBookRepositoryTest {
     @DisplayName("должен удалять книгу по id ")
     @Test
     void shouldDeleteBook() {
-        var firstBook = bookRepository.findById(FIRST_BOOK_ID);
-        assertThat(firstBook).isNotEmpty();
+        var book = bookRepository.findById(FIRST_BOOK_ID);
+        var comment = commentRepository.findByBookId(book.get().getId());
+        assertThat(book).isNotEmpty();
+        assertThat(comment).isNotEmpty();
+
         bookRepository.deleteById(FIRST_BOOK_ID);
         var notFoundBook = bookRepository.findById(FIRST_BOOK_ID);
+        var notFoundComments = commentRepository.findByBookId(FIRST_BOOK_ID);
         assertThat(notFoundBook).isEmpty();
+        assertThat(notFoundComments).isEmpty();
     }
 
     private static List<Author> getDbAuthors() {
@@ -117,9 +133,16 @@ public class MongoBookRepositoryTest {
                 .map(id -> new Author(String.format("%s", id), "Author_" + id))
                 .toList();
     }
+
     private static List<Genre> getDbGenres() {
         return IntStream.range(1, 7).boxed()
                 .map(id -> new Genre(String.format("%s", id), "Genre_" + id))
+                .toList();
+    }
+
+    private static List<Comment> getDbComments(List<Book> dbBooks) {
+        return IntStream.range(1, 4).boxed()
+                .map(id -> new Comment(String.format("%s", id), "Comment_" + id, dbBooks.get(id - 1)))
                 .toList();
     }
     private static List<Book> getDbBooks(List<Author> dbAuthors, List<Genre> dbGenres) {
@@ -131,6 +154,7 @@ public class MongoBookRepositoryTest {
                 ))
                 .toList();
     }
+
     private static List<Book> getDbBooks() {
         var dbAuthors = getDbAuthors();
         var dbGenres = getDbGenres();

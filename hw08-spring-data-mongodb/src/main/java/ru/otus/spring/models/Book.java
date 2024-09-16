@@ -2,16 +2,17 @@ package ru.otus.spring.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.EqualsAndHashCode;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
 @Getter
 @Setter
+@EqualsAndHashCode(of = {"id"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "books")
@@ -20,7 +21,6 @@ public class Book {
     @Id
     private String id;
 
-    @Indexed(unique = true)
     private String title;
 
     private Author author;
