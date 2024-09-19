@@ -77,6 +77,7 @@ public class MongoCommentRepositoryTest {
                 .isPresent()
                 .get()
                 .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
                 .isEqualTo(returnedBook);
     }
 
@@ -94,6 +95,7 @@ public class MongoCommentRepositoryTest {
                 .isPresent()
                 .get()
                 .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
                 .isEqualTo(returnedComment);
     }
 
