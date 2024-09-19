@@ -3,7 +3,6 @@ package ru.otus.spring.event;
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
-import org.springframework.data.mongodb.core.mapping.event.AfterDeleteEvent;
 import org.springframework.data.mongodb.core.mapping.event.BeforeDeleteEvent;
 import org.springframework.stereotype.Component;
 import ru.otus.spring.models.Book;
@@ -18,14 +17,6 @@ public class BookDeletionEventListener extends AbstractMongoEventListener<Book> 
     @Override
     public void onBeforeDelete(BeforeDeleteEvent<Book> event) {
         super.onBeforeDelete(event);
-        Document source = event.getSource();
-        String bookId = source.get("_id").toString();
-        commentRepository.deleteByBookId(bookId);
-    }
-
-    @Override
-    public void onAfterDelete(AfterDeleteEvent<Book> event) {
-        super.onAfterDelete(event);
         Document source = event.getSource();
         String bookId = source.get("_id").toString();
         commentRepository.deleteByBookId(bookId);

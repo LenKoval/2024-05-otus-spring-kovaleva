@@ -59,6 +59,10 @@ public class CommentServiceTest {
         List<CommentDto> actualComment = commentService.findById(bookDto.getId());
         assertThat(actualComment).isNotEmpty();
         assertThat(actualComment.stream().allMatch(commentDto -> commentDto.getBookDto().equals(bookDto)));
+        assertThat(actualComment)
+                .hasSizeGreaterThan(0)
+                .extracting(CommentDto::getId)
+                .contains(bookDto.getId());
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)

@@ -18,7 +18,6 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Репозиторий на основе MongoDatabase для работы с комментариями ")
 @DataMongoTest
@@ -51,7 +50,11 @@ public class MongoCommentRepositoryTest {
 
         assertFalse(comments.isEmpty());
 
-        assertTrue(comments.stream().allMatch(comment -> comment.getBook().equals(book)));
+        assertThat(comments)
+                .isNotEmpty()
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(dbComments.stream().filter(c -> c.getBook().getId().equals(book.getId())).toList());
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
