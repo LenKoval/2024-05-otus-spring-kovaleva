@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.dtos.CommentDto;
 import ru.otus.spring.dtos.CommentViewDto;
-import ru.otus.spring.dtos.CommentViewNotIdDto;
 import ru.otus.spring.exceptions.EntityNotFoundException;
 import ru.otus.spring.mappers.CommentMapper;
 import ru.otus.spring.models.Comment;

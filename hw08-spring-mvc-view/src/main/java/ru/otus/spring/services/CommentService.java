@@ -2,7 +2,6 @@ package ru.otus.spring.services;
 
 import ru.otus.spring.dtos.CommentDto;
 import ru.otus.spring.dtos.CommentViewDto;
-import ru.otus.spring.dtos.CommentViewNotIdDto;
 
 import java.util.List;
 import java.util.Optional;

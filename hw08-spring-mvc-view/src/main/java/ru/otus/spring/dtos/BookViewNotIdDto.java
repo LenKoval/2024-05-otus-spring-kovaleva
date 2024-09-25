@@ -3,7 +3,10 @@ package ru.otus.spring.dtos;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.Setter;
+import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
