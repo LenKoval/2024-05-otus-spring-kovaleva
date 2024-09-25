@@ -11,7 +11,7 @@ values ('Blood Meridian, Or the Evening Redness in the West', 1), ('For Whom the
 
 insert into books_genres(book_id, genre_id)
 values (1, 1),   (1, 2),
-       (1, 3),   (2, 2),
+       (1, 3),   (2, 3),
        (2, 4),   (3, 5),
        (3, 6);
 

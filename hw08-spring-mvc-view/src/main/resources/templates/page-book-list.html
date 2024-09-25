@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book List</title>
+    <style>
+        body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .actions {
+        margin-bottom: 30px;
+    }
+
+    .actions a {
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .actions button {
+        background-color: #3498db;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .actions button:hover {
+        background-color: #2980b9;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 12px 15px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+        color: #333;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tr:hover {
+        background-color: #e9ecef;
+    }
+
+    td:last-child, td:first-child {
+        width: 150px;
+    }
+
+    .books a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .books a:hover {
+        text-decoration: underline;
+    }
+
+    form {
+        display: inline-block;
+    }
+
+    button[type="submit"] {
+        background-color: #dc3545;
+        color: white;
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #c82333;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Books List</h1>
+
+        <div class="actions">
+            <a th:href="@{/books}"><button>Book add</button></a>
+        </div>
+
+        <table class="books">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>TITLE</th>
+                <th>AUTHOR</th>
+                <th>GENRES</th>
+                <th>COMMENTS</th>
+                <th>ACTIONS</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="book : ${books}">
+            <td th:text="${book.id}"></td>
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.authorDto.fullName}"></td>
+            <td th:text="${#strings.listJoin(book.genres.![name], ', ')}"></td>
+            <td>
+                <a href="book-form.html" th:href="@{/books/{id}/comments(id=${book.id})}">SHOW COMMENTS</a>
+            </td>
+            <td>
+                <a href="page-book.html" th:href="@{/books/{bookId}(bookId=${book.id})}">EDIT</a>
+                <form th:action="@{/books/{id}/delete(id=${book.id})}" method="post">
+                    <button type="submit">DELETE</button>
+                </form>
+            </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

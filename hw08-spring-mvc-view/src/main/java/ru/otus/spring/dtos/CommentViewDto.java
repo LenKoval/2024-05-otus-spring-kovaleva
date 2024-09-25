@@ -4,13 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-public class CommentDto {
+public class CommentViewDto {
+
     private long id;
 
     private String text;
-
-    private long bookId;
 }

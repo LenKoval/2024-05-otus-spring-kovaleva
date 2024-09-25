@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.dtos.BookDto;
+import ru.otus.spring.dtos.BookViewDto;
 import ru.otus.spring.exceptions.EntityNotFoundException;
 import ru.otus.spring.mappers.BookMapper;
 import ru.otus.spring.models.Book;
 import ru.otus.spring.repositories.BookRepository;
 
-import java.util.Optional;
 import java.util.List;
 import java.util.Set;
 
@@ -25,11 +25,12 @@ public class BookServiceImpl implements BookService {
 
     private final BookMapper bookMapper;
 
-    @Transactional(readOnly = true)
+    @Transactional()
     @Override
-    public Optional<BookDto> findById(long id) {
-        return bookRepository.findById(id)
-                .map(bookMapper::toDto);
+    public BookViewDto findById(long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Book with id %s not found".formatted(id)));
+        return bookMapper.toViewDto(book);
     }
 
     @Transactional(readOnly = true)

@@ -4,11 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.dtos.CommentDto;
+import ru.otus.spring.dtos.CommentViewDto;
+import ru.otus.spring.dtos.CommentViewNotIdDto;
 import ru.otus.spring.exceptions.EntityNotFoundException;
 import ru.otus.spring.mappers.CommentMapper;
 import ru.otus.spring.models.Comment;
 import ru.otus.spring.repositories.CommentRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -40,10 +43,25 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.toDto(commentRepository.save(comment));
     }
 
+    @Transactional()
+    @Override
+    public List<CommentViewDto> findCommentByBookId(long bookId) {
+        return commentRepository.findCommentsByBookId(bookId)
+                .stream()
+                .map(commentMapper::toViewDto)
+                .toList();
+    }
+
     @Transactional
     @Override
     public Optional<CommentDto> findById(long id) {
         return commentRepository.findById(id)
                 .map(commentMapper::toDto);
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(long id) {
+        commentRepository.deleteById(id);
     }
 }

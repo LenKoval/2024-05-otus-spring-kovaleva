@@ -14,17 +14,18 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.dtos.AuthorDto;
 import ru.otus.spring.dtos.BookDto;
 import ru.otus.spring.dtos.GenreDto;
+import ru.otus.spring.exceptions.EntityNotFoundException;
 import ru.otus.spring.mappers.AuthorMapper;
 import ru.otus.spring.mappers.BookMapper;
 import ru.otus.spring.mappers.GenreMapper;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Сервис для работы с книгами ")
 @DataJpaTest
@@ -55,8 +56,7 @@ public class BookServiceTest {
     void shouldReturnCorrectBookById(BookDto expectedBook) {
         var returnedBook = bookService.findById(expectedBook.getId());
 
-        assertThat(returnedBook).isPresent()
-                .get()
+        assertThat(returnedBook)
                 .usingRecursiveComparison()
                 .ignoringExpectedNullFields()
                 .isEqualTo(expectedBook);
@@ -106,8 +106,10 @@ public class BookServiceTest {
     void shouldDeleteBook() {
         var book = bookService.create("NewBook", 1L, Set.of(1L, 2L));
         bookService.deleteById(book.getId());
-        var actualBook = bookService.findById(book.getId());
-        assertThat(actualBook).isEmpty();
+        Throwable throwable = assertThrows(EntityNotFoundException.class, () -> {
+            bookService.findById(book.getId());
+        });
+        assertNotNull(throwable.getMessage());
     }
 
         private static List<AuthorDto> getDbAuthors() {

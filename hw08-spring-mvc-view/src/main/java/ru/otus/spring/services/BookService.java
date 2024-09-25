@@ -1,14 +1,14 @@
 package ru.otus.spring.services;
 
 import ru.otus.spring.dtos.BookDto;
+import ru.otus.spring.dtos.BookViewDto;
 import ru.otus.spring.models.Book;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public interface BookService {
-    Optional<BookDto> findById(long id);
+    BookViewDto findById(long id);
 
     List<BookDto> findAll();
 

@@ -3,7 +3,11 @@ package ru.otus.spring.mappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.otus.spring.dtos.BookDto;
+import ru.otus.spring.dtos.BookViewDto;
 import ru.otus.spring.models.Book;
+import ru.otus.spring.models.Genre;
+
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -21,5 +25,14 @@ public class BookMapper {
                 book.getGenres().stream()
                         .map(genreMapper::toDto)
                         .toList());
+    }
+
+    public BookViewDto toViewDto(Book book) {
+        return new BookViewDto(book.getId(),
+                book.getTitle(),
+                book.getAuthor().getId(),
+                book.getGenres().stream()
+                        .map(Genre::getId)
+                        .collect(Collectors.toSet()));
     }
 }
