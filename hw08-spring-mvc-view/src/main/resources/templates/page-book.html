@@ -88,28 +88,28 @@
 
     <div class="row">
         <label for="author-select">Author:</label>
-        <select id="author-select" th:field="*{authorId}" th:errorclass="fieldError">
+        <select id="author-select" th:field="*{author}" th:errorclass="fieldError">
             <option th:each="a : ${authors}"
                     th:value="${a.id}"
                     th:text="${a.fullName}"
-                    th:selected="*{authorId}">
+                    th:selected="*{author}">
                 Select author
             </option>
         </select>
-        <div class="errors" th:if="${#fields.hasErrors('authorId')}" th:errors="${book.authorId}">the field is required</div>
+        <div class="errors" th:if="${#fields.hasErrors('author')}" th:errors="${book.author}">the field is required</div>
     </div>
 
     <div class="row">
         <label for="genres-select">Genres:</label>
-        <select id="genres-select" th:field="*{genresIds}" th:errorclass="fieldError" multiple>
+        <select id="genres-select" th:field="*{genres}" th:errorclass="fieldError" multiple>
             <option th:each="g : ${genres}"
-                    th:field="*{genresIds}"
+                    th:field="*{genres}"
                     th:value="${g.id}"
                     th:text="${g.name}">
                 Select genres
             </option>
         </select>
-        <div class="errors" th:if="${#fields.hasErrors('genresIds')}" th:errors="${book.genresIds}">the field is required</div>
+        <div class="errors" th:if="${#fields.hasErrors('genres')}" th:errors="${book.genres}">the field is required</div>
     </div>
 
     <div class="row">

@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class CommentViewNotIdDto {
+public class CommentCreateDto {
 
     @NotNull
     private Long bookId;

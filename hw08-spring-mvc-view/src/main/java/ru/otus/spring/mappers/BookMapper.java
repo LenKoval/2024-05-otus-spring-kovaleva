@@ -3,7 +3,7 @@ package ru.otus.spring.mappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.otus.spring.dtos.BookDto;
-import ru.otus.spring.dtos.BookViewDto;
+import ru.otus.spring.dtos.BookUpdateDto;
 import ru.otus.spring.models.Book;
 import ru.otus.spring.models.Genre;
 
@@ -27,8 +27,8 @@ public class BookMapper {
                         .toList());
     }
 
-    public BookViewDto toViewDto(Book book) {
-        return new BookViewDto(book.getId(),
+    public BookUpdateDto toViewDto(Book book) {
+        return new BookUpdateDto(book.getId(),
                 book.getTitle(),
                 book.getAuthor().getId(),
                 book.getGenres().stream()

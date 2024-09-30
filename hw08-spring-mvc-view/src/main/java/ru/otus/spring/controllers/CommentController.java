@@ -6,12 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.otus.spring.dtos.CommentViewDto;
-import ru.otus.spring.dtos.CommentViewNotIdDto;
+import ru.otus.spring.dtos.CommentDto;
+import ru.otus.spring.dtos.CommentUpdateDto;
+import ru.otus.spring.dtos.CommentCreateDto;
 import ru.otus.spring.services.CommentService;
 
 import java.util.List;
@@ -23,35 +24,36 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping("/books/{bookId}/comments")
-    public String getPageCommentList(@PathVariable long bookId, Model model) {
-        List<CommentViewDto> comments = commentService.findCommentByBookId(bookId);
+    public String getPageCommentList(@PathVariable Long bookId, Model model) {
+        List<CommentDto> comments = commentService.findCommentByBookId(bookId);
         model.addAttribute("comments", comments);
         model.addAttribute("bookId", bookId);
-        model.addAttribute("createComment", new CommentViewNotIdDto());
+        model.addAttribute("createComment", new CommentCreateDto());
 
         return "page-comment-list";
     }
 
     @PostMapping("/books/{bookId}/comments")
-    public String createComment(@PathVariable long bookId, @ModelAttribute @Valid CommentViewNotIdDto commentDto) {
-        commentService.create(commentDto.getText(), commentDto.getBookId());
+    public String createComment(@PathVariable Long bookId,
+                                @ModelAttribute("comment") @Valid CommentCreateDto commentDto) {
+        commentService.create(commentDto);
 
-        return "redirect:/books/%s/comments".formatted(bookId);
+        return "redirect:/books/%d/comments".formatted(bookId);
     }
 
     @PostMapping("/books/{bookId}/comments/{commentId}")
-    public String updateComment(@PathVariable long bookId,
-                                @PathVariable long commentId,
-                                @RequestParam @Valid @NotBlank String text) {
-        commentService.update(commentId, text);
+    public String updateComment(@PathVariable("bookId") Long bookId, @PathVariable("commentId") Long commentId,
+                                @RequestParam @Valid @NotBlank String updatedText) {
+        CommentUpdateDto commentDto = new CommentUpdateDto(commentId, updatedText);
+        commentService.update(commentDto);
 
-        return "redirect:/books/%s/comments".formatted(bookId);
+        return "redirect:/books/%d/comments".formatted(bookId);
     }
 
     @PostMapping("books/{bookId}/comments/{commentId}/delete")
-    public String deleteComment(@PathVariable long bookId, @PathVariable long commentId) {
+    public String deleteComment(@PathVariable long bookId, @PathVariable Long commentId) {
         commentService.deleteById(commentId);
 
-        return "redirect:/books/%s/comments".formatted(bookId);
+        return "redirect:/books/%d/comments".formatted(bookId);
     }
 }

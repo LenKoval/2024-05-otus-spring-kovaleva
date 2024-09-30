@@ -1,20 +1,20 @@
 package ru.otus.spring.services;
 
+import ru.otus.spring.dtos.CommentCreateDto;
 import ru.otus.spring.dtos.CommentDto;
-import ru.otus.spring.dtos.CommentViewDto;
+import ru.otus.spring.dtos.CommentUpdateDto;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CommentService {
 
-    CommentDto create(String text, long bookId);
+    CommentDto create(CommentCreateDto commentCreateDto);
 
-    CommentDto update(long id, String text);
+    CommentDto update(CommentUpdateDto commentUpdateDto);
 
-    List<CommentViewDto> findCommentByBookId(long bookId);
+    List<CommentDto> findCommentByBookId(long bookId);
 
-    Optional<CommentDto> findById(long id);
+    CommentDto findById(long id);
 
     void deleteById(long id);
 }

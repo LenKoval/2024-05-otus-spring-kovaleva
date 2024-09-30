@@ -93,7 +93,7 @@
 <table class="comments">
     <thead>
     <tr>
-        <th>BOOK_ID</th>
+        <th>ID</th>
         <th>COMMENT</th>
         <th>ACTIONS</th>
     </tr>
@@ -103,17 +103,18 @@
         <td th:text="${comment.id}">ID</td>
         <td>
             <form id="edit-comment-form"
-                  th:action="@{/books/{bookId}/comments/{commentId}(bookId=${bookId},commentId=${comment.id})}" method="post">
+                  th:action="@{/books/{bookId}/comments/{commentId}(bookId=${comment.bookId},commentId=${comment.id})}" method="post">
                 <label>
                     <input type="text" name="updatedText"
                            th:value="${comment.text}"
-                           placeholder="NEW COMMENT"/>
+                           placeholder="update text"/>
                 </label>
                 <button type="submit">EDIT</button>
             </form>
         </td>
         <td>
-            <form th:action="@{/books/{bookId}/comments/{commentId}/delete(commentId=${comment.id})}" method="post">
+            <form th:action="@{/books/{bookId}/comments/{commentId}/delete(bookId=${comment.bookId},commentId=${comment.id})}"
+                  th:object="${comment}" method="post">
                 <button type="submit">DELETE</button>
             </form>
         </td>

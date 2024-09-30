@@ -14,14 +14,14 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class BookViewNotIdDto {
+public class BookCreateDto {
 
     @NotBlank
     private String title;
 
     @NotNull
-    private Long authorId;
+    private Long author;
 
     @NotEmpty
-    private Set<@NotNull Long> genresIds;
+    private Set<@NotNull Long> genres;
 }

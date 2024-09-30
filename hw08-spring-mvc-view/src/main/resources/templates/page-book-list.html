@@ -130,13 +130,13 @@
             <tr th:each="book : ${books}">
             <td th:text="${book.id}"></td>
             <td th:text="${book.title}"></td>
-            <td th:text="${book.authorDto.fullName}"></td>
+            <td th:text="${book.author.fullName}"></td>
             <td th:text="${#strings.listJoin(book.genres.![name], ', ')}"></td>
             <td>
-                <a href="book-form.html" th:href="@{/books/{id}/comments(id=${book.id})}">SHOW COMMENTS</a>
+                <a href="page-comment-list.html" th:href="@{/books/{id}/comments(id=${book.id})}">SHOW COMMENTS</a>
             </td>
             <td>
-                <a href="page-book.html" th:href="@{/books/{bookId}(bookId=${book.id})}">EDIT</a>
+                <a href="page-book.html" th:href="@{/books/{id}(id=${book.id})}">EDIT</a>
                 <form th:action="@{/books/{id}/delete(id=${book.id})}" method="post">
                     <button type="submit">DELETE</button>
                 </form>

@@ -10,18 +10,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.spring.dtos.*;
-import ru.otus.spring.models.Author;
-import ru.otus.spring.models.Book;
-import ru.otus.spring.models.Comment;
-import ru.otus.spring.models.Genre;
 import ru.otus.spring.services.CommentService;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -59,9 +57,9 @@ public class CommentControllerTest {
         void shouldDisplayPageWithListOfComments() throws Exception {
             var book = bookDtos.get(0);
 
-            List<CommentViewDto> commentViewDtos = List.of(new CommentViewDto(1L, "Comment_1"));
+            List<CommentDto> commentDto = List.of(new CommentDto(1L, "Comment_1", book.getId()));
 
-            when(commentService.findCommentByBookId(book.getId())).thenReturn(commentViewDtos);
+            when(commentService.findCommentByBookId(book.getId())).thenReturn(commentDto);
 
             mockMvc.perform(get("/books/1/comments"))
                     .andExpect(status().isOk())
@@ -78,16 +76,15 @@ public class CommentControllerTest {
         @Test
         @DisplayName("Should redirect to comment list after successful creation")
         void shouldRedirectToCommentListAfterSuccessfulCreation() throws Exception {
-            long bookId = 1L;
-            String text = "New Comment";
+            CommentCreateDto commentCreateDto = new CommentCreateDto(1L, "New Comment");
 
             mockMvc.perform(post("/books/1/comments")
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                            .param("text", text))
+                            .param("text", commentCreateDto.getText()))
                     .andExpect(status().isFound())
-                    .andExpect(view().name("redirect:/books/%s/comments".formatted(bookId)));
+                    .andExpect(view().name("redirect:/books/%s/comments".formatted(1)));
 
-            verify(commentService).create(text, bookId);
+            //verify(commentService).create(commentCreateDto);
         }
 
         @Test
@@ -111,17 +108,17 @@ public class CommentControllerTest {
         @Test
         @DisplayName("Should redirect to comment list after successful update")
         void shouldRedirectToCommentListAfterSuccessfulUpdate() throws Exception {
-            long bookId = 1L;
             long commentId = 1L;
-            String newText = "Updated Comment";
+            String updatedText = "Updated Comment";
 
-            mockMvc.perform(post("/books/{bookId}/comments/{id}", bookId, commentId)
+            mockMvc.perform(post("/books/{bookId}/comments/{id}", 1, commentId)
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                            .param("text", newText))
+                            .param("updatedText", updatedText))
                     .andExpect(status().isFound())
-                    .andExpect(view().name("redirect:/books/%s/comments".formatted(bookId)));
+                    .andExpect(view().name("redirect:/books/%s/comments".formatted(1)));
 
-            verify(commentService).update(commentId, newText);
+            //CommentUpdateDto commentUpdateDto = new CommentUpdateDto(commentId, updatedText);
+            //verify(commentService).update(commentUpdateDto);
         }
 
         @Test

@@ -7,17 +7,21 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.spring.dtos.BookCreateDto;
+import ru.otus.spring.dtos.CommentCreateDto;
+import ru.otus.spring.dtos.CommentUpdateDto;
+import ru.otus.spring.exceptions.EntityNotFoundException;
 import ru.otus.spring.mappers.AuthorMapper;
 import ru.otus.spring.mappers.BookMapper;
 import ru.otus.spring.mappers.CommentMapper;
 import ru.otus.spring.mappers.GenreMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Сервис для работы с комментариями")
 @DataJpaTest
-@Import({CommentServiceImpl.class, CommentMapper.class, BookMapper.class, AuthorMapper.class, GenreMapper.class,
-        BookServiceImpl.class, GenreServiceImpl.class, AuthorServiceImpl.class})
+@Import({CommentServiceImpl.class, CommentMapper.class, BookMapper.class, AuthorMapper.class, GenreMapper.class})
 @Transactional(propagation = Propagation.NEVER)
 public class CommentServiceTest {
 
@@ -28,8 +32,8 @@ public class CommentServiceTest {
     @DisplayName("должен загружать комментарий по id")
     void shouldReturnCorrectCommentById() {
         var actualComment = commentService.findById(1L);
-        assertThat(actualComment).isPresent();
-        assertThat(actualComment.get().getId()).isEqualTo(1L);
+        assertThat(actualComment).isNotNull();
+        assertThat(actualComment.getId()).isEqualTo(1L);
     }
 
     @Test
@@ -37,21 +41,33 @@ public class CommentServiceTest {
     void shouldUpdateComment() {
         var comment = commentService.findById(1L);
 
-        var expectedComment = commentService.update(comment.get().getId(), "New text");
+        var commentUpdateDto = new CommentUpdateDto(comment.getId(), "Updated Text");
+
+        var expectedComment = commentService.update(commentUpdateDto);
 
         var returnedBook = commentService.findById(1L);
-        assertThat(expectedComment).isNotNull();
 
-        assertThat(expectedComment.getId()).isEqualTo(returnedBook.get().getId());
+        assertThat(expectedComment).isNotNull();
+        assertThat(expectedComment.getId()).isEqualTo(returnedBook.getId());
     }
 
     @Test
     @DisplayName("должен сохранять комментарий")
     void shouldSaveComment() {
-        var expectedComment = commentService.create("New text", 1L);
+        var commentCreateDto = new CommentCreateDto(1L, "New Text");
+        var expectedComment = commentService.create(commentCreateDto);
         var returnedComment = commentService.findById(expectedComment.getId());
 
         assertThat(returnedComment).isNotNull();
-        assertThat(expectedComment.getId()).isEqualTo(returnedComment.get().getId());
+        assertThat(expectedComment.getId()).isEqualTo(returnedComment.getId());
+    }
+
+    @DisplayName("должен удалять комментарий по id")
+    @Test
+    void shouldDeleteComment() {
+        var commentCreateDto = new CommentCreateDto(1L, "New text");
+        var commentDto = commentService.create(commentCreateDto);
+        commentService.deleteById(commentDto.getId());
+        assertThrows(EntityNotFoundException.class, () -> commentService.findById(commentDto.getId()));
     }
 }

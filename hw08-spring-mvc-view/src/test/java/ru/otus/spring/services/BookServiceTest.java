@@ -11,16 +11,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.spring.dtos.AuthorDto;
-import ru.otus.spring.dtos.BookDto;
-import ru.otus.spring.dtos.GenreDto;
+import ru.otus.spring.dtos.*;
 import ru.otus.spring.exceptions.EntityNotFoundException;
 import ru.otus.spring.mappers.AuthorMapper;
 import ru.otus.spring.mappers.BookMapper;
 import ru.otus.spring.mappers.GenreMapper;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -29,8 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Сервис для работы с книгами ")
 @DataJpaTest
-@Import({BookMapper.class, AuthorMapper.class, GenreMapper.class,
-        BookServiceImpl.class, GenreServiceImpl.class, AuthorServiceImpl.class})
+@Import({BookMapper.class, AuthorMapper.class, GenreMapper.class, BookServiceImpl.class})
 @Transactional(propagation = Propagation.NEVER)
 public class BookServiceTest {
 
@@ -81,8 +77,10 @@ public class BookServiceTest {
         var expectedBook = new BookDto(4L, "BookTitle_10500", dbAuthors.get(0),
                 List.of(dbGenres.get(0), dbGenres.get(1)));
 
-        var returnedBookDto = bookService.create("BookTitle_10500", dbAuthors.get(0).getId(),
+        var bookCreateDto = new BookCreateDto("BookTitle_10500", dbAuthors.get(0).getId(),
                 Set.of(dbGenres.get(0).getId(), dbGenres.get(1).getId()));
+
+        var returnedBookDto = bookService.create(bookCreateDto);
 
         assertThat(returnedBookDto).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBook);
     }
@@ -94,9 +92,10 @@ public class BookServiceTest {
         var expectedBook = new BookDto(1L, "BookTitle_10500", dbAuthors.get(0),
                 List.of(dbGenres.get(0), dbGenres.get(1)));
 
-
-        var returnedBook = bookService.update(1L, "BookTitle_10500", dbAuthors.get(0).getId(),
+        var bookUpdateDto = new BookUpdateDto(1L, "BookTitle_10500", dbAuthors.get(0).getId(),
                 Set.of(dbGenres.get(0).getId(), dbGenres.get(1).getId()));
+
+        var returnedBook = bookService.update(bookUpdateDto);
 
         assertThat(returnedBook).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBook);
     }
@@ -104,25 +103,23 @@ public class BookServiceTest {
     @DisplayName("должен удалять книгу по id")
     @Test
     void shouldDeleteBook() {
-        var book = bookService.create("NewBook", 1L, Set.of(1L, 2L));
+        var bookCreateDto = new BookCreateDto("NewBook", 1L, Set.of(1L, 2L));
+        var book = bookService.create(bookCreateDto);
         bookService.deleteById(book.getId());
-        Throwable throwable = assertThrows(EntityNotFoundException.class, () -> {
-            bookService.findById(book.getId());
-        });
-        assertNotNull(throwable.getMessage());
+        assertThrows(EntityNotFoundException.class, () -> bookService.findById(book.getId()));
     }
 
-        private static List<AuthorDto> getDbAuthors() {
-            return IntStream.range(1, 4).boxed()
-                    .map(id -> new AuthorDto(id, "Author_" + id))
-                    .toList();
-        }
+    private static List<AuthorDto> getDbAuthors() {
+        return IntStream.range(1, 4).boxed()
+                .map(id -> new AuthorDto(id, "Author_" + id))
+                .toList();
+    }
 
-        private static List<GenreDto> getDbGenres() {
-            return IntStream.range(1, 7).boxed()
-                    .map(id -> new GenreDto(id, "Genre_" + id))
-                    .toList();
-        }
+    private static List<GenreDto> getDbGenres() {
+        return IntStream.range(1, 7).boxed()
+                .map(id -> new GenreDto(id, "Genre_" + id))
+                .toList();
+    }
 
     private static List<BookDto> getDbBooks(List<AuthorDto> dbAuthors, List<GenreDto> dbGenres) {
         return IntStream.range(1, 4).boxed()

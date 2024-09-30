@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import ru.otus.spring.dtos.BookDto;
-import ru.otus.spring.dtos.BookViewNotIdDto;
-import ru.otus.spring.dtos.BookViewDto;
+import ru.otus.spring.dtos.BookCreateDto;
+import ru.otus.spring.dtos.BookUpdateDto;
 import ru.otus.spring.services.AuthorService;
 import ru.otus.spring.services.BookService;
 import ru.otus.spring.services.CommentService;
@@ -41,7 +41,7 @@ public class BookController {
     @GetMapping("/books")
     public String createPage(Model model) {
         model.addAttribute("bookId", null);
-        model.addAttribute("book", new BookViewNotIdDto());
+        model.addAttribute("book", new BookCreateDto());
         model.addAttribute("authors", authorService.findAll());
         model.addAttribute("genres", genreService.findAll());
 
@@ -60,7 +60,7 @@ public class BookController {
 
     @PostMapping("/books/{id}")
     public String update(@PathVariable long id,
-                         @ModelAttribute("book") @Valid BookViewDto bookDto,
+                         @ModelAttribute("book") @Valid BookUpdateDto bookDto,
                          BindingResult bindingResult,
                          Model model) {
         if (bindingResult.hasErrors()) {
@@ -69,12 +69,12 @@ public class BookController {
             return "page-book";
         }
 
-        bookService.update(id, bookDto.getTitle(), bookDto.getAuthorId(), bookDto.getGenresIds());
+        bookService.update(bookDto);
         return "redirect:/books/" + id;
     }
 
     @PostMapping("/books")
-    public String create(@ModelAttribute("book") @Valid BookViewNotIdDto bookDto,
+    public String create(@ModelAttribute("book") @Valid BookCreateDto bookDto,
                          BindingResult bindingResult,
                          Model model) {
         if (bindingResult.hasErrors()) {
@@ -83,7 +83,7 @@ public class BookController {
             return "page-book";
         }
 
-        bookService.create(bookDto.getTitle(), bookDto.getAuthorId(), bookDto.getGenresIds());
+        bookService.create(bookDto);
 
         return "redirect:/";
     }
