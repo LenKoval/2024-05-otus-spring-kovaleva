@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <style>
+        body {
+            font-family: Arial, Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .error-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .error-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+
+        .error-details div {
+            width: 48%;
+        }
+
+        span {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        pre {
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            padding: 15px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .back-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .back-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <h1>Error</h1>
+
+    <div class="error-details">
+        <div>
+            <span>Status:</span>
+            <span th:text="${status}"></span>
+        </div>
+        <div>
+            <span>Error:</span>
+            <pre th:text="${error}"></pre>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <p>Would you like to go back to the <a th:href="@{/}">previous page</a>?</p>
+    </div>
+</div>
+</body>
+</html>
