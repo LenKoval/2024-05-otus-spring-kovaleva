@@ -20,8 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CommentController.class)
 public class CommentControllerTest {
@@ -111,7 +110,7 @@ public class CommentControllerTest {
             long commentId = 1L;
             String updatedText = "Updated Comment";
 
-            mockMvc.perform(post("/books/{bookId}/comments/{id}", 1, commentId)
+            mockMvc.perform(post("/books/{bookId}/comments/{id}/update", 1, commentId)
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                             .param("updatedText", updatedText))
                     .andExpect(status().isFound())

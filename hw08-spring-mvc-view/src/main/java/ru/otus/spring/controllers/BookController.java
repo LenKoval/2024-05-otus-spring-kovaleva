@@ -90,10 +90,6 @@ public class BookController {
 
     @PostMapping("/books/{id}/delete")
     public String delete(@PathVariable long id) {
-        var comments = commentService.findCommentByBookId(id);
-        for (int i = 0; i < comments.size(); i++) {
-            commentService.deleteById(comments.get(i).getId());
-        }
         bookService.deleteById(id);
 
         return "redirect:/";

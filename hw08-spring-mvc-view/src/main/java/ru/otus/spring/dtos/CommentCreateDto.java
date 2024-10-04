@@ -18,4 +18,8 @@ public class CommentCreateDto {
 
     @NotBlank
     private String text;
+
+    public CommentCreateDto(String text) {
+        this.text = text;
+    }
 }

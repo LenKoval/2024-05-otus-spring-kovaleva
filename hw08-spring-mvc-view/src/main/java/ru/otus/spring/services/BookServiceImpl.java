@@ -11,6 +11,7 @@ import ru.otus.spring.mappers.BookMapper;
 import ru.otus.spring.models.Book;
 import ru.otus.spring.repositories.AuthorRepository;
 import ru.otus.spring.repositories.BookRepository;
+import ru.otus.spring.repositories.CommentRepository;
 import ru.otus.spring.repositories.GenreRepository;
 
 import java.util.List;
@@ -24,6 +25,8 @@ public class BookServiceImpl implements BookService {
     private final GenreRepository genreRepository;
 
     private final AuthorRepository authorRepository;
+
+    private final CommentRepository commentRepository;
 
     private final BookMapper bookMapper;
 
@@ -75,6 +78,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void deleteById(long id) {
+        commentRepository.deleteByBookId(id);
         bookRepository.deleteById(id);
     }
 }

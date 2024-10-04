@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.spring.dtos.*;
+import ru.otus.spring.exceptions.EntityNotFoundException;
 import ru.otus.spring.services.AuthorService;
 import ru.otus.spring.services.BookService;
 import ru.otus.spring.services.CommentService;
@@ -18,7 +19,6 @@ import ru.otus.spring.services.GenreService;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -123,6 +123,26 @@ public class BookControllerTest {
 
             verify(bookService).findById(1L);
         }
+
+        @Test
+        @DisplayName("Should return 404 for invalid book ID")
+        void shouldReturn404ForInvalidBookId() throws Exception {
+            when(bookService.findById(anyLong())).thenThrow(new EntityNotFoundException("Book not found"));
+
+            mockMvc.perform(get("/books/9999"))
+                    .andExpect(status().isNotFound());
+        }
+
+        @Test
+        @DisplayName("Should return 404 for invalid genres ID")
+        void shouldReturn404ForInvalidGenresId() throws Exception {
+            BookDto book = new BookDto(3L, "Not found Book", authorDtos.get(0), null);
+
+            when(genreService.findAll()).thenThrow(new EntityNotFoundException("Author not found"));
+
+            mockMvc.perform(get("/books/3"))
+                    .andExpect(status().isNotFound());
+        }
     }
 
     @Nested
@@ -208,7 +228,6 @@ public class BookControllerTest {
                     .andExpect(status().isFound())
                     .andExpect(view().name("redirect:/"));
 
-            verify(commentService).findCommentByBookId(book.getId());
             verify(bookService).deleteById(book.getId());
         }
     }

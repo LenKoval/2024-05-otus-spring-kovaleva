@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.otus.spring.dtos.CommentDto;
 import ru.otus.spring.dtos.CommentUpdateDto;
 import ru.otus.spring.dtos.CommentCreateDto;
+import ru.otus.spring.dtos.CommentDto;
 import ru.otus.spring.services.CommentService;
 
 import java.util.List;
@@ -41,10 +41,12 @@ public class CommentController {
         return "redirect:/books/%d/comments".formatted(bookId);
     }
 
-    @PostMapping("/books/{bookId}/comments/{commentId}")
+    @PostMapping("/books/{bookId}/comments/{commentId}/update")
     public String updateComment(@PathVariable("bookId") Long bookId, @PathVariable("commentId") Long commentId,
                                 @RequestParam @Valid @NotBlank String updatedText) {
+
         CommentUpdateDto commentDto = new CommentUpdateDto(commentId, updatedText);
+
         commentService.update(commentDto);
 
         return "redirect:/books/%d/comments".formatted(bookId);
