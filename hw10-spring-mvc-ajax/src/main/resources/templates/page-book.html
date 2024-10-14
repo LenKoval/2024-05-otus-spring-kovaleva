@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Book</title>
-    <style>
-        body {
+    <style type="text/css">
+         body {
         font-family: Arial, sans-serif;
         padding: 20px;
         max-width: 800px;
@@ -73,49 +73,141 @@
     }
     </style>
 </head>
-<body>
-<form id="page-book" th:object="${book}"
-      th:action="@{${bookId == null ? '/books' : '/books/' + bookId}}"
-      th:method="post"
-      method="post">
-    <h3>Book Info:</h3>
+<body onload="initForm()">
+<h3>Book Info:</h3>
+<form id="book-form" method="post">
+    <input id="bookId" type="hidden" value="" th:value="${bookId}" />
 
     <div class="row">
         <label for="title-input">Title:</label>
-        <input id="title-input" name="title" type="text" value="1" th:field="*{title}" th:errorclass="errors"/>
-        <div class="errors" th:if="${#fields.hasErrors('title')}" th:errors="${book.title}">the field is required</div>
+        <input id="title-input" name="title" type="text"/>
     </div>
 
     <div class="row">
         <label for="author-select">Author:</label>
-        <select id="author-select" th:field="*{author}" th:errorclass="fieldError">
-            <option th:each="a : ${authors}"
-                    th:value="${a.id}"
-                    th:text="${a.fullName}"
-                    th:selected="*{author}">
-                Select author
-            </option>
-        </select>
-        <div class="errors" th:if="${#fields.hasErrors('author')}" th:errors="${book.author}">the field is required</div>
+        <select id="author-select"></select>
     </div>
 
     <div class="row">
         <label for="genres-select">Genres:</label>
-        <select id="genres-select" th:field="*{genres}" th:errorclass="fieldError" multiple>
-            <option th:each="g : ${genres}"
-                    th:field="*{genres}"
-                    th:value="${g.id}"
-                    th:text="${g.name}">
-                Select genres
-            </option>
-        </select>
-        <div class="errors" th:if="${#fields.hasErrors('genres')}" th:errors="${book.genres}">the field is required</div>
+        <select id="genres-select" multiple></select>
     </div>
 
     <div class="row">
-        <button type="submit">Save</button>
-        <a href="page-book-list.html" th:href="@{/}"><button type="button">Cancel</button></a>
+        <button type="submit" onclick="saveBook()">Save</button>
+        <a href="/"><button type="button">Cancel</button></a>
     </div>
 </form>
+<script>
+    const fetchAuthors = () => fetch('/api/authors')
+        .then(resp => resp.json());
+
+    const fetchGenres = () => fetch('/api/genres')
+        .then(resp => resp.json());
+
+    const fetchBookById = bookId => fetch('/api/books/' + bookId)
+        .then(resp => resp.json());
+
+    const createBook = book => fetch('/api/books', {
+        method: 'post',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(book)
+    });
+
+    const updateBook = (bookId, book) => fetch('/api/books/' + bookId, {
+        method: 'put',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(book)
+    });
+
+    const bookId = document.getElementById('bookId').value;
+    const titleInput = document.getElementById('title-input');
+    const authorSelect = document.getElementById('author-select');
+    const genresSelect = document.getElementById('genres-select');
+
+    const initForm = () => {
+        if (bookId === '') {
+            initCreateForm();
+            return;
+        }
+        initEditForm();
+    }
+
+    const initCreateForm = () => {
+        fetchAuthors()
+            .then(authors => authors.map(a => createAuthorOption(a)).forEach(opt => authorSelect.appendChild(opt)))
+            .catch(r => alert(r));
+        fetchGenres()
+            .then(genres => genres.map(g => createGenreOption(g)).forEach(opt => genresSelect.appendChild(opt)))
+            .catch(r => alert(r));
+    }
+
+    const initEditForm = () => {
+        fetchBookById(bookId)
+            .then(book => fillBook(book))
+            .catch(r => alert(r));
+    }
+
+    const fillBook = book => {
+        titleInput.value = book.title;
+        fetchAuthors()
+            .then(authors => authors.forEach(author => {
+                const authorOption = createAuthorOption(author);
+                if (book.author.id === author.id) {
+                    authorOption.selected = true;
+                }
+                authorSelect.appendChild(authorOption);
+            }));
+
+        fetchGenres()
+            .then(genres => genres.forEach(genre => {
+                const genreOption = createGenreOption(genre);
+                if (book.genres.includes(genre.id)) {
+                    genreOption.selected = true;
+                }
+                genresSelect.appendChild(genreOption);
+            }))
+    };
+
+    const createAuthorOption = author => {
+        const option = document.createElement('option');
+        option.value = author.id;
+        option.text = author.fullName;
+        return option;
+    };
+
+    const createGenreOption = genre => {
+        const option = document.createElement('option');
+        option.value = genre.id;
+        option.text = genre.name;
+        return option;
+    }
+
+    const saveBook = () => {
+        if (bookId === '') {
+            createBook(buildBook())
+                .catch(r => alert(r));
+            return;
+        }
+        updateBook(bookId, buildBook())
+            .then(_ => window.location = '/')
+            .catch(r => alert(r));
+    };
+
+    const buildBook = () => {
+        return {
+            id: bookId,
+            title: titleInput.value,
+            author: authorSelect.options[authorSelect.selectedIndex].value,
+            genres: Array.from(genresSelect.selectedOptions).map(o => o.value)
+        }
+    }
+</script>
 </body>
 </html>

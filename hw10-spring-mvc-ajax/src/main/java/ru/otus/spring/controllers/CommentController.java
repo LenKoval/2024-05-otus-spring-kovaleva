@@ -24,7 +24,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping("/books/{bookId}/comments")
-    public String getPageCommentList(@PathVariable Long bookId, Model model) {
+    public String getPageCommentList(@PathVariable("bookId") long bookId, Model model) {
         List<CommentDto> comments = commentService.findCommentByBookId(bookId);
         model.addAttribute("comments", comments);
         model.addAttribute("bookId", bookId);
@@ -34,7 +34,7 @@ public class CommentController {
     }
 
     @PostMapping("/books/{bookId}/comments")
-    public String createComment(@PathVariable Long bookId,
+    public String createComment(@PathVariable long bookId,
                                 @ModelAttribute("comment") @Valid CommentCreateDto commentDto) {
         commentService.create(commentDto);
 
@@ -42,7 +42,7 @@ public class CommentController {
     }
 
     @PostMapping("/books/{bookId}/comments/{commentId}/update")
-    public String updateComment(@PathVariable("bookId") Long bookId, @PathVariable("commentId") Long commentId,
+    public String updateComment(@PathVariable("bookId") long bookId, @PathVariable("commentId") long commentId,
                                 @RequestParam @Valid @NotBlank String updatedText) {
 
         CommentUpdateDto commentDto = new CommentUpdateDto(commentId, updatedText);
@@ -53,7 +53,7 @@ public class CommentController {
     }
 
     @PostMapping("books/{bookId}/comments/{commentId}/delete")
-    public String deleteComment(@PathVariable long bookId, @PathVariable Long commentId) {
+    public String deleteComment(@PathVariable long bookId, @PathVariable long commentId) {
         commentService.deleteById(commentId);
 
         return "redirect:/books/%d/comments".formatted(bookId);
