@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.spring.controllers.rest.BookController;
 import ru.otus.spring.dtos.*;
+import ru.otus.spring.exceptions.NotFoundException;
 import ru.otus.spring.services.BookService;
 
 import java.util.List;
@@ -49,18 +50,12 @@ public class BookControllerTest {
                 authorDtos.get(0).getId(),
                 Set.of(genreDtos.get(0).getId(), genreDtos.get(1).getId()));
 
-        var bookDto = new BookDto(4,
-                "New_Book_Title",
-                authorDtos.get(0),
-                List.of(genreDtos.get(0), genreDtos.get(1)));
-
         when(bookService.create(any())).thenReturn(null);
 
         mockMvc.perform(post("/api/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(bookCreateDto)))
                 .andExpect(status().isCreated());
-                //.andExpect(content().json(asJsonString(bookDto)));
     }
 
     @Test
@@ -79,7 +74,6 @@ public class BookControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(bookUpdateDto)))
                 .andExpect(status().isOk());
-                //.andExpect(content().json(asJsonString(bookDto)));
     }
 
     @Test
@@ -106,6 +100,45 @@ public class BookControllerTest {
     public void testDeleteBook() throws Exception {
         mockMvc.perform(delete("/api/books/1"))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void testCreateBookWithInvalidData() throws Exception {
+        var invalidBookCreateDto = new BookCreateDto(
+                null,
+                authorDtos.get(0).getId(),
+                Set.of(genreDtos.get(0).getId(), genreDtos.get(1).getId()));
+
+        when(bookService.create(any())).thenReturn(null);
+
+        mockMvc.perform(post("/api/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(invalidBookCreateDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testUpdateBookWithInvalidData() throws Exception {
+        var invalidBookUpdateDto = new BookUpdateDto(
+                booksDtos.get(0).getId(),
+                null,
+                authorDtos.get(0).getId(),
+                Set.of(genreDtos.get(0).getId(), genreDtos.get(1).getId()));
+
+        when(bookService.update(any())).thenReturn(null);
+
+        mockMvc.perform(put("/api/books/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(invalidBookUpdateDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testGetBookByIdNotFound() throws Exception {
+        when(bookService.findById(999L)).thenThrow(new NotFoundException("Book not found"));
+
+        mockMvc.perform(get("/api/books/999"))
+                .andExpect(status().isNotFound());
     }
 
     private String asJsonString(final Object obj) {

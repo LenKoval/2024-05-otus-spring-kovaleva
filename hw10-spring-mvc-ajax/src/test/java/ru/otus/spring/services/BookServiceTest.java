@@ -12,7 +12,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.dtos.*;
-import ru.otus.spring.exceptions.EntityNotFoundException;
+import ru.otus.spring.exceptions.NotFoundException;
 import ru.otus.spring.mappers.AuthorMapper;
 import ru.otus.spring.mappers.BookMapper;
 import ru.otus.spring.mappers.GenreMapper;
@@ -106,7 +106,7 @@ public class BookServiceTest {
         var bookCreateDto = new BookCreateDto("NewBook", 1L, Set.of(1L, 2L));
         var book = bookService.create(bookCreateDto);
         bookService.deleteById(book.getId());
-        assertThrows(EntityNotFoundException.class, () -> bookService.findById(book.getId()));
+        assertThrows(NotFoundException.class, () -> bookService.findById(book.getId()));
     }
 
     private static List<AuthorDto> getDbAuthors() {

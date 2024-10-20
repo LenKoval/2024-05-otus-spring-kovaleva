@@ -7,10 +7,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.spring.dtos.BookCreateDto;
 import ru.otus.spring.dtos.CommentCreateDto;
 import ru.otus.spring.dtos.CommentUpdateDto;
-import ru.otus.spring.exceptions.EntityNotFoundException;
+import ru.otus.spring.exceptions.NotFoundException;
 import ru.otus.spring.mappers.AuthorMapper;
 import ru.otus.spring.mappers.BookMapper;
 import ru.otus.spring.mappers.CommentMapper;
@@ -68,6 +67,6 @@ public class CommentServiceTest {
         var commentCreateDto = new CommentCreateDto(1L, "New text");
         var commentDto = commentService.create(commentCreateDto);
         commentService.deleteById(commentDto.getId());
-        assertThrows(EntityNotFoundException.class, () -> commentService.findById(commentDto.getId()));
+        assertThrows(NotFoundException.class, () -> commentService.findById(commentDto.getId()));
     }
 }

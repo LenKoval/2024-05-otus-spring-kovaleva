@@ -1,8 +1,8 @@
 package ru.otus.spring.controllers.rest;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,12 +26,12 @@ public class BookController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/books")
-    public BookDto createBook(@RequestBody @Validated BookCreateDto bookDto) {
+    public BookDto createBook(@RequestBody @Valid BookCreateDto bookDto) {
         return bookService.create(bookDto);
     }
 
     @PutMapping("/api/books/{id}")
-    public BookDto updateBook(@RequestBody @Validated BookUpdateDto bookDto) {
+    public BookDto updateBook(@RequestBody @Valid BookUpdateDto bookDto) {
         return bookService.update(bookDto);
     }
 

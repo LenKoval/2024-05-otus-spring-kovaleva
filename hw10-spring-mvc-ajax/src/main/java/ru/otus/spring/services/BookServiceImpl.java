@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.dtos.BookCreateDto;
 import ru.otus.spring.dtos.BookDto;
 import ru.otus.spring.dtos.BookUpdateDto;
-import ru.otus.spring.exceptions.EntityNotFoundException;
+import ru.otus.spring.exceptions.NotFoundException;
 import ru.otus.spring.mappers.BookMapper;
 import ru.otus.spring.models.Book;
 import ru.otus.spring.repositories.AuthorRepository;
@@ -34,7 +34,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto findById(long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Book with id %d not found".formatted(id)));
+                .orElseThrow(() -> new NotFoundException("Book with id %d not found".formatted(id)));
         return bookMapper.toDto(book);
     }
 
@@ -51,7 +51,7 @@ public class BookServiceImpl implements BookService {
     public BookDto create(BookCreateDto bookCreateDto) {
         Book book = new Book(0, bookCreateDto.getTitle(),
                 authorRepository.findById(bookCreateDto.getAuthor())
-                        .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found"
+                        .orElseThrow(() -> new NotFoundException("Author with id %d not found"
                                 .formatted(bookCreateDto.getAuthor()))),
                 genreRepository.findAllById(bookCreateDto.getGenres()));
         bookRepository.save(book);
@@ -62,12 +62,12 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto update(BookUpdateDto bookUpdateDto) {
         Book book = bookRepository.findById(bookUpdateDto.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Book with id %d not found"
+                .orElseThrow(() -> new NotFoundException("Book with id %d not found"
                         .formatted(bookUpdateDto.getId())));
 
         book.setTitle(bookUpdateDto.getTitle());
         book.setAuthor(authorRepository.findById(bookUpdateDto.getAuthor())
-                .orElseThrow(() -> new EntityNotFoundException("Book with id %d not found"
+                .orElseThrow(() -> new NotFoundException("Book with id %d not found"
                         .formatted(bookUpdateDto.getId()))));
         book.setGenres(genreRepository.findAllById(bookUpdateDto.getGenres()));
         bookRepository.save(book);

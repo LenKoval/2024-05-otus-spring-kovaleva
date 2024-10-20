@@ -120,17 +120,6 @@
             .then(resp => resp.json())
             .then(books => books.forEach(b => document.getElementById('books').appendChild(createTrBook(b))));
 
-            const loadComments = () => {
-        fetch(`/api/books/' + bookId + '/comments`)
-            .then(resp => resp.json())
-            .then(comments => {
-                comments.forEach(comment => {
-                    addCommentRow(comment);
-                });
-            })
-            .catch(error => console.error('Error loading comments:', error));
-    };
-
         const createTrBook = book => {
             const tr = document.createElement('tr');
             tr.id = 'trBook' + book.id;
@@ -139,9 +128,6 @@
                         <td>${book.title}</td>
                         <td>${book.author.fullName}</td>
                         <td>${book.genres.map(g => g.name).join(', ')}</td>
-                        <td>
-                            <a href="/books/{bookId}/comments(bookId=${book.id})">SHOW COMMENTS</a>
-                        </td>
                         <td>
                             <a href="/books/${book.id}">EDIT</a>
                             <button type="submit" onclick="deleteBook(${book.id})">DELETE</button>
@@ -174,7 +160,6 @@
         <th>TITLE</th>
         <th>AUTHOR</th>
         <th>GENRES</th>
-        <th>COMMENTS</th>
         <th>ACTIONS</th>
     </tr>
     </thead>

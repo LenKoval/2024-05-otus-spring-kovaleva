@@ -92,12 +92,11 @@
         <label for="genres-select">Genres:</label>
         <select id="genres-select" multiple></select>
     </div>
-
-    <div class="row">
-        <button type="submit" onclick="saveBook()">Save</button>
-        <a href="/"><button type="button">Cancel</button></a>
-    </div>
 </form>
+<div class="row">
+    <button type="submit" onclick="saveBook()">Save</button>
+    <a href="/"><button type="button">Cancel</button></a>
+</div>
 <script>
     const fetchAuthors = () => fetch('/api/authors')
         .then(resp => resp.json());
@@ -192,12 +191,25 @@
     const saveBook = () => {
         if (bookId === '') {
             createBook(buildBook())
-                .catch(r => alert(r));
-            return;
+                .then(() => {
+                    alert('Book added successfully!');
+                    window.location.href = '/';
+                })
+                .catch(r => {
+                    console.error('Failed to add book:', r);
+                    alert('Failed to add book. Please try again.');
+                });
+        } else {
+            updateBook(bookId, buildBook())
+                .then(() => {
+                    alert('Book updated successfully!');
+                    window.location.href = '/';
+                })
+                .catch(r => {
+                    console.error('Failed to update book:', r);
+                    alert('Failed to update book. Please try again.');
+                });
         }
-        updateBook(bookId, buildBook())
-            .then(_ => window.location = '/')
-            .catch(r => alert(r));
     };
 
     const buildBook = () => {
