@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:maindb
+  flyway:
+    enabled: true
+    hibernate:
+      ddl-auto: none
+    show-sql: true
