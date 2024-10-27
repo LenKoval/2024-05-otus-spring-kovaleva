@@ -12,7 +12,9 @@ import java.util.List;
 public class CustomUserDetails implements UserDetails {
 
     private final String username;
+
     private final String password;
+
     private final List<GrantedAuthority> authorities;
 
     public CustomUserDetails(String username, String password, List<Role> roles) {
