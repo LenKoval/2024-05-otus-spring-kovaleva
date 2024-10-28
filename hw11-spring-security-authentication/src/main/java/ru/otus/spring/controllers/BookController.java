@@ -14,7 +14,6 @@ import ru.otus.spring.dtos.BookCreateDto;
 import ru.otus.spring.dtos.BookUpdateDto;
 import ru.otus.spring.services.AuthorService;
 import ru.otus.spring.services.BookService;
-import ru.otus.spring.services.CommentService;
 import ru.otus.spring.services.GenreService;
 
 import java.util.List;
@@ -22,13 +21,12 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class BookController {
+
     private final BookService bookService;
 
     private final AuthorService authorService;
 
     private final GenreService genreService;
-
-    private final CommentService commentService;
 
     @GetMapping()
     public String getPageBookList(Model model) {
