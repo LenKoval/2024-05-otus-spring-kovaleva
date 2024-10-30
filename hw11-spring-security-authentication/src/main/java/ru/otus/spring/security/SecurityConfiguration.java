@@ -3,6 +3,7 @@ package ru.otus.spring.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -29,7 +30,9 @@ public class SecurityConfiguration {
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.POST, "/books/**", "/comments/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/").authenticated()
+                        .anyRequest().denyAll()
                 ).exceptionHandling(exceptionHandler -> exceptionHandler
                         .accessDeniedPage("/access-denied"))
                 .formLogin(fm -> fm.loginPage("/extlogin")
