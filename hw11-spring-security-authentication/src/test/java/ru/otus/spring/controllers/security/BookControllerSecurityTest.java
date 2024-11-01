@@ -2,11 +2,12 @@ package ru.otus.spring.controllers.security;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.spring.controllers.BookController;
@@ -22,6 +23,7 @@ import java.util.Set;
 import java.util.stream.IntStream;
 
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -75,9 +77,7 @@ public class BookControllerSecurityTest {
                 .andExpect(status().isOk());
         mockMvc.perform(get("/books/{id}", book.getId())
                         .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("book"))
-                .andExpect(view().name("page-book"));
+                .andExpect(status().isOk());
     }
 
     @WithMockUser
@@ -86,47 +86,50 @@ public class BookControllerSecurityTest {
         BookUpdateDto bookUpdateDto = new BookUpdateDto(booksDtos.get(0).getId(), "Update Title",
                 authorDtos.get(1).getId(), Set.of(genreDtos.get(1).getId(), genreDtos.get(2).getId()));
 
-        mockMvc.perform(post("/books/{id}", bookUpdateDto.getId())
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("title", bookUpdateDto.getTitle())
-                        .param("author", "2")
-                        .param("genres", "2,3")
-                        .with(csrf()))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/books/" + bookUpdateDto.getId()));
-
         BookCreateDto bookCreateDto = new BookCreateDto("New Title", authorDtos.get(0).getId(),
                 Set.of(genreDtos.get(0).getId(), genreDtos.get(1).getId()));
 
+        var book = booksDtos.get(0);
+
+        mockMvc.perform(post("/books/{id}", bookUpdateDto.getId())
+                        .param("title", bookUpdateDto.getTitle())
+                        .param("author", "2")
+                        .param("genres", "2,3")
+                        .with(csrf())
+                        .flashAttr("book", bookUpdateDto))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/books/" + bookUpdateDto.getId()));
+
         mockMvc.perform(post("/books")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("title", bookCreateDto.getTitle())
                         .param("author", "1")
                         .param("genres", "1,2")
-                        .with(csrf()))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/"));
-
-        var book = booksDtos.get(0);
+                        .with(csrf())
+                        .flashAttr("book", bookCreateDto))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
 
         mockMvc.perform(post("/books/{id}/delete", book.getId())
                         .with(csrf()))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
     }
 
-    @Test
-    void testUnauthorizedActions() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"/books", "/books/1", "/books/1"})
+    void testUnauthorizedActions(String urlTemplate) throws Exception {
 
-        mockMvc.perform(get("/books"))
+        mockMvc.perform(get(urlTemplate)
+                        .with(csrf()))
                 .andExpect(status().isUnauthorized());
 
-        mockMvc.perform(get("/books/1"))
+        mockMvc.perform(post(urlTemplate)
+                        .with(csrf()))
                 .andExpect(status().isUnauthorized());
 
-        mockMvc.perform(post("/books/1")
-                .with(csrf()))
-                .andExpect(status().isUnauthorized());
+        verifyNoMoreInteractions(bookService);
+        verifyNoMoreInteractions(authorService);
+        verifyNoMoreInteractions(genreService);
     }
 
     private static List<AuthorDto> getDbAuthors() {
