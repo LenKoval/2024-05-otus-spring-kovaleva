@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>404 Error - Page Not Found</title>
+    <style>
+        body {
+            font-family: Arial, Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #e74c3c;
+            font-size: 48px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #3498db;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .error-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+
+        .error-details div {
+            width: 48%;
+        }
+
+        span {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        pre {
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            padding: 15px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .back-link {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .back-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>404 Error</h1>
+
+    <div class="error-details">
+        <div>
+            <span>Status:</span>
+            <span th:text="${status}"></span>
+        </div>
+        <div>
+            <span>Error:</span>
+            <pre th:text="${error}"></pre>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <p>Would you like to go back to the <a th:href="@{/}">previous page</a>?</p>
+    </div>
+</div>
+</body>
+</html>

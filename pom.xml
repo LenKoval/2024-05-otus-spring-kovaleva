@@ -22,5 +22,6 @@
         <module>hw08-spring-mvc-view</module>
         <module>hw10-spring-mvc-ajax</module>
         <module>hw11-spring-security-authentication</module>
+        <module>hw12-spring-security-acl</module>
     </modules>
 </project>
