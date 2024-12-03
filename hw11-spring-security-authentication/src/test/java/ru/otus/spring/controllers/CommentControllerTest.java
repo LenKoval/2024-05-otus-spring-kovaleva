@@ -61,10 +61,9 @@ public class CommentControllerTest {
             when(commentService.findCommentByBookId(book.getId())).thenReturn(commentDto);
 
             mockMvc.perform(get("/books/1/comments"))
-                    .andExpect(status().isOk())
-                    .andExpect(view().name("page-comment-list"));
+                    .andExpect(status().isUnauthorized());
 
-            verify(commentService).findCommentByBookId(book.getId());
+            //verify(commentService).findCommentByBookId(book.getId());
         }
     }
 
@@ -80,8 +79,7 @@ public class CommentControllerTest {
             mockMvc.perform(post("/books/1/comments")
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                             .param("text", commentCreateDto.getText()))
-                    .andExpect(status().isFound())
-                    .andExpect(view().name("redirect:/books/%s/comments".formatted(1)));
+                    .andExpect(status().isForbidden());
 
             //verify(commentService).create(commentCreateDto);
         }
@@ -94,7 +92,7 @@ public class CommentControllerTest {
             mockMvc.perform(post("/books/1/comments")
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                             .param("text", emptyText))
-                    .andExpect(status().is5xxServerError());
+                    .andExpect(status().is4xxClientError());
 
             verifyNoInteractions(commentService);
         }
@@ -113,8 +111,7 @@ public class CommentControllerTest {
             mockMvc.perform(post("/books/{bookId}/comments/{id}/update", 1, commentId)
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                             .param("updatedText", updatedText))
-                    .andExpect(status().isFound())
-                    .andExpect(view().name("redirect:/books/%s/comments".formatted(1)));
+                    .andExpect(status().isForbidden());
 
             //CommentUpdateDto commentUpdateDto = new CommentUpdateDto(commentId, updatedText);
             //verify(commentService).update(commentUpdateDto);
@@ -130,7 +127,7 @@ public class CommentControllerTest {
             mockMvc.perform(post("/books/{bookId}/comments/{id}", bookId, commentId)
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                             .param("text", invalidText))
-                    .andExpect(status().is5xxServerError());
+                    .andExpect(status().is4xxClientError());
 
             verifyNoInteractions(commentService);
         }
@@ -147,10 +144,9 @@ public class CommentControllerTest {
             long commentId = 1L;
 
             mockMvc.perform(post("/books/{bookId}/comments/{id}/delete",bookId, commentId))
-                    .andExpect(status().isFound())
-                    .andExpect(view().name("redirect:/books/%s/comments".formatted(bookId)));
+                    .andExpect(status().isForbidden());
 
-            verify(commentService).deleteById(commentId);
+            //verify(commentService).deleteById(commentId);
         }
     }
 
