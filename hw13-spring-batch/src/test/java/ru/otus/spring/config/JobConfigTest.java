@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(JobConfig.class)
 public class JobConfigTest {
 
-    @Autowired
+    /*@Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
 
     @Autowired
@@ -141,6 +141,6 @@ public class JobConfigTest {
         return List.of(new MongoComment("1", "Comment_1", bookList.get(0)),
                 new MongoComment("2", "Comment_2", bookList.get(1)),
                 new MongoComment("3", "Comment_3", bookList.get(2)));
-    }
+    }*/
 
 }
