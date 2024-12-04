@@ -25,3 +25,11 @@ spring:
       port: 27017
       database: testdb
       host: localhost
+mongock:
+  runner-type: applicationrunner
+  change-logs-scan-package:
+    - ru.otus.spring.mongock.changelog
+  mongo-db:
+    write-concern:
+      journal: false
+    read-concern: local
