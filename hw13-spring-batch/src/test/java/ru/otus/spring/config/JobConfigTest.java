@@ -142,4 +142,5 @@ public class JobConfigTest {
                 new MongoComment("2", "Comment_2", bookList.get(1)),
                 new MongoComment("3", "Comment_3", bookList.get(2)));
     }
+
 }
