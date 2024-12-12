@@ -41,7 +41,7 @@ public class IntegrationConfig {
     }
 
     @Bean
-    public IntegrationFlow insectFlow() {
+    public IntegrationFlow coffeeCupFlow() {
         return IntegrationFlow.from(coffeeBeanChannel())
                 .split()
                 .<CoffeeBean, GroundCoffee>transform(coffeeBean -> new GroundCoffee(
