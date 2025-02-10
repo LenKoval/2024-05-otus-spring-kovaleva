@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 public class CoffeeCup {
 
+    private CoffeeVariety variety;
+
     private CoffeeBeverage beverage;
 
 }

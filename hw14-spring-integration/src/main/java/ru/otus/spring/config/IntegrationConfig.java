@@ -1,8 +1,8 @@
 package ru.otus.spring.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.dsl.MessageChannelSpec;
 import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.dsl.PollerSpec;
@@ -10,20 +10,13 @@ import org.springframework.integration.dsl.Pollers;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.handler.LoggingHandler;
 import org.springframework.integration.scheduling.PollerMetadata;
-import org.springframework.messaging.Message;
-import ru.otus.spring.models.CoffeeCup;
-import ru.otus.spring.models.GroundCoffee;
 import ru.otus.spring.models.CoffeeBean;
-import ru.otus.spring.models.CoffeeBeverage;
-
-import java.util.Random;
-import java.util.random.RandomGenerator;
+import ru.otus.spring.models.GroundCoffee;
+import ru.otus.spring.services.PreparedCoffeeService;
 
 @Configuration
-@EnableIntegration
+@Slf4j
 public class IntegrationConfig {
-
-    private final RandomGenerator randomGenerator = RandomGenerator.getDefault();
 
     @Bean
     public MessageChannelSpec<?, ?> coffeeBeanChannel() {
@@ -31,7 +24,7 @@ public class IntegrationConfig {
     }
 
     @Bean
-    public MessageChannelSpec<?, ?> groundCoffeeChannel() {
+    public MessageChannelSpec<?, ?> coffeeCupChannel() {
         return MessageChannels.publishSubscribe();
     }
 
@@ -41,19 +34,15 @@ public class IntegrationConfig {
     }
 
     @Bean
-    public IntegrationFlow coffeeCupFlow() {
+    public IntegrationFlow coffeeCupFlow(PreparedCoffeeService coffeeService) {
         return IntegrationFlow.from(coffeeBeanChannel())
                 .split()
-                .<CoffeeBean, GroundCoffee>transform(coffeeBean -> new GroundCoffee(
-                        coffeeBean.getCount(),
-                        coffeeBean.getVariety())
-                )
-                .<GroundCoffee, CoffeeCup>transform(groundCoffee -> new CoffeeCup(
-                        CoffeeBeverage.values()[new Random().nextInt(CoffeeBeverage.values().length)])
-                )
-                .<CoffeeCup>log(LoggingHandler.Level.INFO, "coffeeCup", Message::getPayload)
-                .aggregate()
-                .channel(groundCoffeeChannel())
+                .<CoffeeBean, GroundCoffee>transform(bean -> new GroundCoffee(bean.getCount(), bean.getVariety()))
+                .handle(coffeeService, "preparedCoffee")
+                .log(LoggingHandler.Level.INFO, "coffeeCup-flow.preparedCoffee",
+                        m -> "Coffee cup %s was prepared".formatted(m.getHeaders().getId()))
+                .aggregate(a -> a.sendPartialResultOnExpiry(true).groupTimeout(1))
+                .channel(coffeeCupChannel())
                 .get();
     }
 }

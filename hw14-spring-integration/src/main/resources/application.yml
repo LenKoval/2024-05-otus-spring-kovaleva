@@ -3,4 +3,4 @@ spring:
     level:
       root: INFO
 
-      org.springframework.integration: debug
+      org.springframework.integration: info

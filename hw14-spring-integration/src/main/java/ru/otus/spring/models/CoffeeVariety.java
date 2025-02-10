@@ -16,4 +16,11 @@ public enum CoffeeVariety {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        return "CoffeeVariety{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }
