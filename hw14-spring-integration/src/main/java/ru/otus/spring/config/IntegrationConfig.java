@@ -3,6 +3,7 @@ package ru.otus.spring.config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.dsl.MessageChannelSpec;
 import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.dsl.PollerSpec;
@@ -15,10 +16,11 @@ import ru.otus.spring.models.GroundCoffee;
 import ru.otus.spring.services.PreparedCoffeeService;
 
 @Configuration
+@EnableIntegration
 @Slf4j
 public class IntegrationConfig {
 
-    @Bean
+    @Bean()
     public MessageChannelSpec<?, ?> coffeeBeanChannel() {
         return MessageChannels.queue(10);
     }
