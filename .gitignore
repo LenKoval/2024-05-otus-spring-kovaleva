@@ -24,3 +24,4 @@ spring-shell.log
 /dist/
 /nbdist/
 /.nb-gradle/
+/library-catalog.log

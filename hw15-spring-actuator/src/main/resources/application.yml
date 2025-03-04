@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:maindb
+  flyway:
+    enabled: true
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  data:
+    rest:
+      base-path: /datarest
+
+# Включаем все необходимые эндпоинты через HTTP
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health, metrics, logfile"
+  endpoint:
+    health:
+      show-details: always
+    logfile:
+      enabled:
+        true
+  health:
+    defaults:
+      enabled: true
+
+# Настройка логирования
+logging:
+  file:
+    name: library-catalog.log
+    max-size: 10MB
+    max-history: 30
+  level:
+    root: INFO
+    org.springframework: INFO
