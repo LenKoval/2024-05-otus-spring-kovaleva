@@ -25,5 +25,6 @@
         <module>hw12-spring-security-acl</module>
         <module>hw13-spring-batch</module>
         <module>hw14-spring-integration</module>
+        <module>hw15-spring-actuator</module>
     </modules>
 </project>
